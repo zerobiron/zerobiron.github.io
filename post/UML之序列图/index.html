@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+	  
+	  UML之序列图 | Zerobiron-Learn more write less
+	  
+  </title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/uikit/2.21.0/css/uikit.min.css">
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/8.6/styles/github.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+	<div class="uk-block uk-block-large uk-block-muted">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          
+          <div id="header" class="clearfix">
+            <div class="uk-float-left">
+              <h2><a href="/">Zerobiron-Learn more write less</a></h2>
+            </div>
+            <div class="uk-float-right">
+              <a href="/" class="uk-button">Home</a>
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <a href="/zerobiron.github.io/about/" class="uk-button">About</a>
+                
+              
+            </div>
+          </div>
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+<div class="uk-block uk-block-default">
+	<div class="uk-container uk-container-center">
+		<div class="uk-grid">
+			<div class="uk-width-1-10"></div>
+			<div class="uk-width-8-10">
+				<article class="uk-article">
+					<h1 class="uk-article-title" style="font-size: 23px;">
+						UML之序列图
+					</h1>
+					
+					<p class="uk-article-meta">Posted on Fri, Nov 277, 27116 |  <a href="/zerobiron.github.io/tags/uml" class="uk-button uk-button-mini">#UML</a></p>
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+          Unless otherwise indicated, the text of documents in this site is available under the <a href="https://creativecommons.org/licenses/by/3.0/deed">Creative Commons Attribution 3.0 Unported License</a>, or any later version. Copyright -2016 Zerobiron.
+        </div>
+					
+
+<p>#序列图
+序列图（sequence diagram）重在表示系统内部一群小对象指尖的互动.一般采用双叉法同步分析用例图和类图，通过序列图来整合，调整三方面的图。</p>
+
+<h3 id="基本元素:4e3f143dbb27759f7b269110ab10ee60">基本元素</h3>
+
+<p>包括对象、消息。</p>
+
+<h4 id="一群对象-object:4e3f143dbb27759f7b269110ab10ee60">一群对象(object)</h4>
+
+<p>序列图是一张栅栏状的图形，展现出一群对象的一小段存活期间。对象之间的互动消息横跨在生命线(lifeline)上。</p>
+
+<h4 id="消息-message:4e3f143dbb27759f7b269110ab10ee60">消息(message)</h4>
+
+<p>原来用例中的流程步骤拆解成对象之间的“消息”。位于线条上的长条矩形称为“执行说明(execution specification)”,用来表示对象收到消息后，会负责的一小段事情。</p>
+
+<h3 id="bce-模式:4e3f143dbb27759f7b269110ab10ee60">BCE 模式</h3>
+
+<p>ＢＣＥ模式(Boundary-Control-Entity Patterns)将对象分为三类：边界类、控制类和实体类。　　</p>
+
+<ul>
+<li>边界类。隔离系统内外，参与者只能跟边界对象互动，不能直接发送消息给控制对象或实体对象。</li>
+<li>控制类。对应者用例，用来控制用例执行期间的复杂运算或者业务逻辑(business logic)。</li>
+<li>实体类。主要用来保存问题领域中的重要信息，封装了跟数据结构和数据存储有关的变化。　　</li>
+</ul>
+
+<p>如果只是单纯对数据表进行增加、删除、修改、查询的话，可以不设置控对象，让边界对象直接发送消息给实体对象。</p>
+
+				</article>
+			</div>
+			<div class="uk-width-1-10"></div>
+		</div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        
+        <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+          <h3 class="uk-panel-title">Related Posts</h3>
+          
+          
+          <ul class="uk-list uk-list-striped">
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+                <li><a href="/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/">UML之类图</a></li>
+              
+            
+              
+              
+              
+                <li><a href="/zerobiron.github.io/post/UML%E5%92%8COOAD/">UML和OOAD</a></li>
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+          </ul>
+        </div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        <div id="disqus_thread" data-uk-scrollspy></div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+	</div>
+</div>
+
+	<div id="footer" class="uk-block uk-block-large uk-block-muted" data-uk-scrollspy="{repeat: true, delay: 600}">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          <div class="uk-grid">
+            <div class="uk-width-1-1">
+              &copy; Copyright -2016  Zerobiron
+            </div>
+            <div class="uk-width-1-1">
+              Powered by <a href="http://gohugo.io">Hugo</a> | Themed by <a href="https://github.com/leopku/hugo-theme-next">NeXT</a>
+            </div>
+          </div>
+
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+	<script src="//cdn.jsdelivr.net/jquery/1.11.3/jquery.min.js"></script>
+	<script src="//cdn.jsdelivr.net/uikit/2.21.0/js/uikit.min.js"></script>
+	<script src="//cdn.jsdelivr.net/highlight.js/8.6.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', '', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+(function() {
+
+  if (window.location.hostname == "localhost") { return; };
+
+  var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    ds_loaded = false;
+  var disqus_shortname = '';
+    disqus_url = '\/zerobiron.github.io\/post\/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE\/';
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+  $('[data-uk-scrollspy]').on('init.uk.scrollspy', function () {
+    if (!ds_loaded){
+      ds_loaded = true;
+      document.getElementById('disqus_thread').appendChild(dsq);
+    }
+  })
+
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+

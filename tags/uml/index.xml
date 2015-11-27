@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Uml on Zerobiron-Learn more write less</title>
+    <link>zerobiron.github.io/tags/uml/</link>
+    <description>Recent content in Uml on Zerobiron-Learn more write less</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Fri, 27 Nov 2015 15:33:51 +0800</lastBuildDate>
+    <atom:link href="zerobiron.github.io/tags/uml/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>UML之序列图</title>
+      <link>/zerobiron.github.io/post/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE/</link>
+      <pubDate>Fri, 27 Nov 2015 15:33:51 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE/</guid>
+      <description>
+
+&lt;p&gt;#序列图
+序列图（sequence diagram）重在表示系统内部一群小对象指尖的互动.一般采用双叉法同步分析用例图和类图，通过序列图来整合，调整三方面的图。&lt;/p&gt;
+
+&lt;h3 id=&#34;基本元素:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;基本元素&lt;/h3&gt;
+
+&lt;p&gt;包括对象、消息。&lt;/p&gt;
+
+&lt;h4 id=&#34;一群对象-object:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;一群对象(object)&lt;/h4&gt;
+
+&lt;p&gt;序列图是一张栅栏状的图形，展现出一群对象的一小段存活期间。对象之间的互动消息横跨在生命线(lifeline)上。&lt;/p&gt;
+
+&lt;h4 id=&#34;消息-message:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;消息(message)&lt;/h4&gt;
+
+&lt;p&gt;原来用例中的流程步骤拆解成对象之间的“消息”。位于线条上的长条矩形称为“执行说明(execution specification)”,用来表示对象收到消息后，会负责的一小段事情。&lt;/p&gt;
+
+&lt;h3 id=&#34;bce-模式:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;BCE 模式&lt;/h3&gt;
+
+&lt;p&gt;ＢＣＥ模式(Boundary-Control-Entity Patterns)将对象分为三类：边界类、控制类和实体类。　　&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;边界类。隔离系统内外，参与者只能跟边界对象互动，不能直接发送消息给控制对象或实体对象。&lt;/li&gt;
+&lt;li&gt;控制类。对应者用例，用来控制用例执行期间的复杂运算或者业务逻辑(business logic)。&lt;/li&gt;
+&lt;li&gt;实体类。主要用来保存问题领域中的重要信息，封装了跟数据结构和数据存储有关的变化。　　&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果只是单纯对数据表进行增加、删除、修改、查询的话，可以不设置控对象，让边界对象直接发送消息给实体对象。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UML之类图</title>
+      <link>/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/</link>
+      <pubDate>Fri, 27 Nov 2015 15:29:56 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/</guid>
+      <description>
+
+&lt;h1 id=&#34;类图进阶知识:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;类图进阶知识&lt;/h1&gt;
+
+&lt;p&gt;从分析到设计。分析阶段重点在于领域概念、业务流程等。设计阶段则要注重实际工作平台上，承接分析阶段的类图、用例图、序列图加上开发人员的观点，最后生成可以交付给程序员的设计文件。&lt;/p&gt;
+
+&lt;h3 id=&#34;基础元素:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;基础元素&lt;/h3&gt;
+
+&lt;p&gt;####依赖关系
+依赖关系(dependency relationship)是一种暂时的、动态的关系，不需要被长期保存。如果两个对象之间已经存在静态关系时，优先使用静态关系交互，并且讲静态关系保存在数据库中。如果两个对象之间没有静态关系，以可以建立暂时性的依赖关系，以便进行交互，而且用完及丢，不用保存在数据库中。&lt;/p&gt;
+
+&lt;h4 id=&#34;泛化关系:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;泛化关系&lt;/h4&gt;
+
+&lt;p&gt;泛化关系是一种分类关系；对用一种概念的事物，区分为一般性的(general)和特定性的(specific),然后再构建起两类之间的一般性关系。&lt;/p&gt;
+
+&lt;h4 id=&#34;保护等级:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;保护等级&lt;/h4&gt;
+
+&lt;p&gt;虽然，通过泛化关系，子类可以集成父类已经定义好的属性、操作和关系。不过，要是父类讲成员定义成私有等级(private)的话，子类虽然还是可以继承，但是却无法在子类中直接访问私有成员。所以ＵＭＬ设置了“等级保护(protected)”的可见性，能见度介于私有等级和公有等级之间，专门配合泛化关系使用。保护等级的符号是“＃”。&lt;/p&gt;
+
+&lt;h4 id=&#34;抽象类:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;抽象类&lt;/h4&gt;
+
+&lt;p&gt;泛化架构中，有时候父类并不完整，所以无法生成对象，这种无法产子的类成为“抽象类(abstract class)”.抽象类名称用斜体字来表示。&lt;/p&gt;
+
+&lt;h4 id=&#34;类层级:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;类层级&lt;/h4&gt;
+
+&lt;p&gt;类层级(class-scoped)的属性与操作代表整个类共享一份属性，而且外界只要通过类就可以调用操作，不需要先生成对象。&lt;/p&gt;
+
+&lt;h4 id=&#34;公有类:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;公有类&lt;/h4&gt;
+
+&lt;p&gt;公有类(utility class)的属性和操作都是“类层级”的，所以不需要生成对象，就可以直接是使用公有类所提供的属性和操作。公有类图标是一半的矩形，类名称上标示 &amp;lt;&lt;tutility &gt;&amp;gt;,用来区分。&lt;/p&gt;
+
+&lt;p&gt;####　枚举类型
+枚举类型(enumeration),显示枚举值。矩形图标多个&amp;lt;&lt;enumeration&gt;&amp;gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;从面向对象到关系性数据库:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;从面向对象到关系性数据库&lt;/h3&gt;
+
+&lt;p&gt;在ＵＭＬ中，系统以对象的方式在运行，当然也包含以对象的方式存储在数据库中。虽然面向对象数据库(Object-Oriented-Databasen, OODB)已经发展多年，但关系型数据库却是目前的主流技术。设计师可以选择在类中加入关系型数据库的“主键(Primart Key, PK)”和“外键(foreign key,　FK)”的概念，让实体类图可以一图两用，同时落实到程序代码和关系型数据库。特别注意，在面向对象的程序设计中，对象之间通过连接就可以连接到对方，因此类之间有静态关系，也就不需要额外加入键值，特别是外键的概念。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UML和OOAD</title>
+      <link>/zerobiron.github.io/post/UML%E5%92%8COOAD/</link>
+      <pubDate>Fri, 27 Nov 2015 15:28:32 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E5%92%8COOAD/</guid>
+      <description>
+
+&lt;h1 id=&#34;uml和ooad入门:29d3ba1129a7866e52293147e2d26111&#34;&gt;UML和OOAD入门&lt;/h1&gt;
+
+&lt;h3 id=&#34;简介:29d3ba1129a7866e52293147e2d26111&#34;&gt;简介&lt;/h3&gt;
+
+&lt;p&gt;教程采用三种图 类图（class diagram）、用例图(use case diagram)和序列图(sequence diagram).其他技术有
+ 1. 事务模式（transaction patterns）应用事务模式，快速绘制类图。
+ 2. 用例描述（use case description）针对用例图每个用例，以文字方式描述用例执行流程。
+ 3. BCE模式（Boundary-Control-Entity patterns）应用BCE模式，帮助绘制出序列图。&lt;/p&gt;
+
+&lt;p&gt;分析设计步骤：首先，由分析师交付一套分析阶段的类图、用例图和序列图的文件给设计师；接着，设计师根据这套分析文件，添加与实际技术有关的设计内容，生成另一套类图、用例图和序列图的设计文件给程序员。&lt;/p&gt;
+
+&lt;h3 id=&#34;类图:29d3ba1129a7866e52293147e2d26111&#34;&gt;类图&lt;/h3&gt;
+
+&lt;p&gt;类图(class diagram)用来表示系统内部的静态结构(static structure)。具体来说，开发人员可以通过类图的设计，将数以万行的程序代码分门别类，以构成系统内部的静态结构。&lt;br /&gt;
+现在通过去相比有了新的术语:模块变成类(class)、功能变成操作(operation)、变量变成属性(attribute).还有了新的划分方法：以前的做法是从功能的角度，把大功能、大流程分成数个模块；再把功能模块分成小功能、小流程，定出功能；然后在编写功能时，定义所需的变量。新的分法是，拿用户的领域术语当类，然后确定相关的操作和属性，最后将其封装在同一个类中。&lt;/p&gt;
+
+&lt;h4 id=&#34;分析师必学元素:29d3ba1129a7866e52293147e2d26111&#34;&gt;分析师必学元素&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;类&lt;br /&gt;
+寻找领域术语作为类名称。类图标为矩形，通常矩形分为三格:顶格放置类名称、中格放置属性、底格放置操作。
+· 属性。属性是数据项，所以需要指定它的类型（type），属性名称后接冒号隔开类型。若属性有默认值，可以在类型后面加上等号，然后标出默认值。&lt;br /&gt;
+· 操作。操作名称后面以小括号括起输入参数，然后可以在小括号后接冒号，标出返回参数的类型。&lt;br /&gt;
+· 可见性（visibility）。属性和操作名称前有加号“+”，用来表示访问等级。掌握私有（private）和公有（public）。&lt;/li&gt;
+&lt;li&gt;关联&lt;br /&gt;
+关联图标是实线，两个结合端点标注多重性。多重性的下限为0，上限是无限大（*），下限标示在前面，上限标示在后面，两个数字之间使用两个点（..）隔开。多对多的多重性拆分成两个一对多的关联。&lt;/li&gt;
+&lt;li&gt;组合关系&lt;br /&gt;
+表示强烈的整体-部分（whole-part）关系时整体端用实心菱形，未标示端表示部分端。具备这种关联叫组合关系（composition rela-tionship）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;事务模式:29d3ba1129a7866e52293147e2d26111&#34;&gt;事务模式&lt;/h4&gt;
+
+&lt;p&gt;领域概念非常多，建议分析师应用“事务模式”迅速勾勒出类图的雏型。&lt;br /&gt;
+事务模式强调以“事务（Transaction）”为中心，串起跟事务相关的事务明细（TransactionLineItem）、涉众（Participant）、地点（Place）、物品（Item）事务涉及的物品概念分为：“特定物品（SpecificItem）”和“物品（Item）”有时候不确定是否可以用“特定物品-事务”等，可以先加注释。事务本身含有时间因素，所以事务之后可能有“后续事务”。涉众表示一种身份，背后有真正的“参与者”。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

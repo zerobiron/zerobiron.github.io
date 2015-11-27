@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+	  
+	  Ubuntu调节屏幕亮度 | Zerobiron-Learn more write less
+	  
+  </title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/uikit/2.21.0/css/uikit.min.css">
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/8.6/styles/github.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+	<div class="uk-block uk-block-large uk-block-muted">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          
+          <div id="header" class="clearfix">
+            <div class="uk-float-left">
+              <h2><a href="/">Zerobiron-Learn more write less</a></h2>
+            </div>
+            <div class="uk-float-right">
+              <a href="/" class="uk-button">Home</a>
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <a href="/zerobiron.github.io/about/" class="uk-button">About</a>
+                
+              
+            </div>
+          </div>
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+<div class="uk-block uk-block-default">
+	<div class="uk-container uk-container-center">
+		<div class="uk-grid">
+			<div class="uk-width-1-10"></div>
+			<div class="uk-width-8-10">
+				<article class="uk-article">
+					<h1 class="uk-article-title" style="font-size: 23px;">
+						Ubuntu调节屏幕亮度
+					</h1>
+					
+					<p class="uk-article-meta">Posted on Fri, Nov 277, 27116 |  <a href="/zerobiron.github.io/tags/ubuntu" class="uk-button uk-button-mini">#ubuntu</a></p>
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+          Unless otherwise indicated, the text of documents in this site is available under the <a href="https://creativecommons.org/licenses/by/3.0/deed">Creative Commons Attribution 3.0 Unported License</a>, or any later version. Copyright -2016 Zerobiron.
+        </div>
+					
+
+<h1 id="ubuntu14-10调节屏幕亮度:b836717b735f422fc60daeb38d6258c4">Ubuntu14.10调节屏幕亮度</h1>
+
+<p>命令行输入<code>sudo vim /etc/default/grub</code><br>
+找到<br>
+GRUB_CMDLINE_LINUX_DEFAULT=&ldquo;quiet splash&rdquo;<br />
+GRUB_CMDLINE_LINUX=&ldquo;&rdquo;</p>
+
+<p>改为<br>
+GRUB_CMDLINE_LINUX_DEFAULT=&ldquo;quiet splash acpi_osi=Linux&rdquo;<br>
+GRUB_CMDLINE_LINUX=&ldquo;acpi_osi=Linux acpi_backlight=vendor&rdquo;</p>
+
+<p>保存</p>
+
+<p>升级grub <code>sudo update-grub</code><br>
+之后重启电脑就可以用Fn调节屏幕亮度了。</p>
+
+<h3 id="补充:b836717b735f422fc60daeb38d6258c4">补充</h3>
+
+<p>设定亮度默认值</p>
+
+<p>终端输入 <code>sudo gedit /etc/rc.local</code>
+在打开文件里增加一句（加在exit 0之前）
+代码: <code>echo 500 &gt; /sys/class/backlight/intel_backlight/brightness</code><br />
+意思是默认值设为500，可更改为其他合适的数字。
+最后保存</p>
+
+				</article>
+			</div>
+			<div class="uk-width-1-10"></div>
+		</div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        
+        <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+          <h3 class="uk-panel-title">Related Posts</h3>
+          
+          
+          <ul class="uk-list uk-list-striped">
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+          </ul>
+        </div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        <div id="disqus_thread" data-uk-scrollspy></div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+	</div>
+</div>
+
+	<div id="footer" class="uk-block uk-block-large uk-block-muted" data-uk-scrollspy="{repeat: true, delay: 600}">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          <div class="uk-grid">
+            <div class="uk-width-1-1">
+              &copy; Copyright -2016  Zerobiron
+            </div>
+            <div class="uk-width-1-1">
+              Powered by <a href="http://gohugo.io">Hugo</a> | Themed by <a href="https://github.com/leopku/hugo-theme-next">NeXT</a>
+            </div>
+          </div>
+
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+	<script src="//cdn.jsdelivr.net/jquery/1.11.3/jquery.min.js"></script>
+	<script src="//cdn.jsdelivr.net/uikit/2.21.0/js/uikit.min.js"></script>
+	<script src="//cdn.jsdelivr.net/highlight.js/8.6.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', '', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+(function() {
+
+  if (window.location.hostname == "localhost") { return; };
+
+  var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    ds_loaded = false;
+  var disqus_shortname = '';
+    disqus_url = '\/zerobiron.github.io\/post\/Ubuntu%E8%B0%83%E8%8A%82%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6\/';
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+  $('[data-uk-scrollspy]').on('init.uk.scrollspy', function () {
+    if (!ds_loaded){
+      ds_loaded = true;
+      document.getElementById('disqus_thread').appendChild(dsq);
+    }
+  })
+
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+

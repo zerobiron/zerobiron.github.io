@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ubuntu on Zerobiron-Learn more write less</title>
+    <link>zerobiron.github.io/tags/ubuntu/</link>
+    <description>Recent content in Ubuntu on Zerobiron-Learn more write less</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Fri, 27 Nov 2015 15:24:54 +0800</lastBuildDate>
+    <atom:link href="zerobiron.github.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Ubuntu调节屏幕亮度</title>
+      <link>/zerobiron.github.io/post/Ubuntu%E8%B0%83%E8%8A%82%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6/</link>
+      <pubDate>Fri, 27 Nov 2015 15:24:54 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/Ubuntu%E8%B0%83%E8%8A%82%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6/</guid>
+      <description>
+
+&lt;h1 id=&#34;ubuntu14-10调节屏幕亮度:b836717b735f422fc60daeb38d6258c4&#34;&gt;Ubuntu14.10调节屏幕亮度&lt;/h1&gt;
+
+&lt;p&gt;命令行输入&lt;code&gt;sudo vim /etc/default/grub&lt;/code&gt;&lt;br&gt;
+找到&lt;br&gt;
+GRUB_CMDLINE_LINUX_DEFAULT=&amp;ldquo;quiet splash&amp;rdquo;&lt;br /&gt;
+GRUB_CMDLINE_LINUX=&amp;ldquo;&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;改为&lt;br&gt;
+GRUB_CMDLINE_LINUX_DEFAULT=&amp;ldquo;quiet splash acpi_osi=Linux&amp;rdquo;&lt;br&gt;
+GRUB_CMDLINE_LINUX=&amp;ldquo;acpi_osi=Linux acpi_backlight=vendor&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;保存&lt;/p&gt;
+
+&lt;p&gt;升级grub &lt;code&gt;sudo update-grub&lt;/code&gt;&lt;br&gt;
+之后重启电脑就可以用Fn调节屏幕亮度了。&lt;/p&gt;
+
+&lt;h3 id=&#34;补充:b836717b735f422fc60daeb38d6258c4&#34;&gt;补充&lt;/h3&gt;
+
+&lt;p&gt;设定亮度默认值&lt;/p&gt;
+
+&lt;p&gt;终端输入 &lt;code&gt;sudo gedit /etc/rc.local&lt;/code&gt;
+在打开文件里增加一句（加在exit 0之前）
+代码: &lt;code&gt;echo 500 &amp;gt; /sys/class/backlight/intel_backlight/brightness&lt;/code&gt;&lt;br /&gt;
+意思是默认值设为500，可更改为其他合适的数字。
+最后保存&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

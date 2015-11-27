@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zerobiron-Learn more write less</title>
+    <link>zerobiron.github.io/</link>
+    <description>Recent content on Zerobiron-Learn more write less</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Fri, 27 Nov 2015 15:35:46 +0800</lastBuildDate>
+    <atom:link href="zerobiron.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C&#43;&#43;实现简单DES</title>
+      <link>/zerobiron.github.io/post/C&#43;&#43;%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95DES/</link>
+      <pubDate>Fri, 27 Nov 2015 15:35:46 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/C&#43;&#43;%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95DES/</guid>
+      <description>
+
+&lt;h1 id=&#34;用c-实现简单des加密:116c21c451023b30713024acc9484fad&#34;&gt;用C++实现简单DES加密&lt;/h1&gt;
+
+&lt;p&gt;学习密码知识遇到分组密码加密方式DES,尝试用C++写了一下程序，过程中遇到了很多问题，也学到了很多新知识&lt;/p&gt;
+
+&lt;p&gt;目标功能是输入十六位十六进制数，和十六位十六进制数的密钥经过加密输出密文和每一轮加密的密钥。首先要把十六进制数转化成二进制０１形式，然后开始做变换。开始的想法是用数组保存二进制数，后来发现变换时数组长度不确定，不易初始化。后来想到可以用string类保存０１序列。&lt;/p&gt;
+
+&lt;p&gt;过程中用到了string类的初始化&lt;code&gt;string str;&lt;/code&gt;
+insert，pushback，getInt， getString等方法过程还是挺有意思的此外还学回来如何快速地调试。代码写的比较麻烦，以后有时间再重构一下(实在太长)。
+代码如下：
+        // DES.cpp : Defines the entry point for the console application.
+        //&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    #include &amp;quot;stdafx.h&amp;quot;
+    #include &amp;lt;iostream&amp;gt;
+    #include &amp;lt;string&amp;gt;
+    #include &amp;lt;typeinfo&amp;gt;
+    #include &amp;lt;vector&amp;gt;
+    using namespace std;
+    string Etransform(string R);    //E变换
+    string N16ToN2(string N16);    //十六进制数字转换成二进制字符。 ok
+    string N2ToN16(string N2);     //二进制数转换成十六进制。
+    void getC0D0(string k,string&amp;amp; C0,string&amp;amp; D0);        //用初始密钥生成C0和D0
+    string STransform(string k,string e);  //取异或 + S盒变换  返回S32个字节
+    string PTransform(string S);             //P变换 +与Li取异或 返回32字节Ri
+    int getInt(string str);                  //string转换成int &amp;quot;0001&amp;quot;-&amp;gt; 1
+    string getString(int n);                 //int转换成string
+    void Ftransform(string&amp;amp; L, string&amp;amp; R, string k16, int i);   //圈函数
+    string getKey(string&amp;amp; Ci, string&amp;amp; Di, int i);     //由Ci，Di得到密钥Ki
+
+
+    int _tmain(int argc, _TCHAR* argv[]){
+
+        string M16;                         //输入的十六进制数字
+        string m16;
+        string K16;
+        string k16;
+        string key;     //密钥48位
+        string R0;      //初始化R0
+        string L0;      //
+        string C0;      //密钥扩展中的C0;
+        string D0;      //密钥扩展中的D0;
+        int i;
+        cout &amp;lt;&amp;lt; &amp;quot;输入一个十六位的十六进制的明文(以0x开头)&amp;quot; &amp;lt;&amp;lt; endl;
+        getline(cin, M16);
+        while(M16.length() != 18){
+            cout &amp;lt;&amp;lt; &amp;quot;输入错误，重新输入&amp;quot;;
+            getline(cin, M16);
+        }
+        cout &amp;lt;&amp;lt; M16 &amp;lt;&amp;lt; endl;
+        cout &amp;lt;&amp;lt; &amp;quot;输入十六位密钥（以0x开头）&amp;quot; &amp;lt;&amp;lt; endl;
+        getline(cin, K16);
+        while (K16.length() != 18){
+            cout &amp;lt;&amp;lt; &amp;quot;输入错误，重新输入&amp;quot; &amp;lt;&amp;lt; endl;
+            getline(cin, K16);
+        }
+        k16.insert(0,N16ToN2(K16));     //密钥对应的二进制数64
+        m16.insert(0,N16ToN2(M16));     //明文对应的二进制数64
+        L0.insert(0, m16, 0, 32);
+        R0.insert(0, m16, 32, 32);
+        getC0D0(k16, C0, D0);           //得到C0，D0
+        for (i = 1; i &amp;lt; 16; i++){
+            key.insert(0, getKey(C0, D0, i));
+            Ftransform(L0, R0, key, i);
+            cout &amp;lt;&amp;lt;&amp;quot;第&amp;quot;&amp;lt;&amp;lt;i&amp;lt;&amp;lt;&amp;quot;次加密&amp;quot;&amp;lt;&amp;lt; endl;
+        }
+        key.insert(0, getKey(C0, D0, i));
+        Ftransform(R0, L0, key, i);
+        cout &amp;lt;&amp;lt; &amp;quot;第&amp;quot; &amp;lt;&amp;lt;16&amp;lt;&amp;lt; &amp;quot;次加密&amp;quot; &amp;lt;&amp;lt; endl;
+        system(&amp;quot;pause&amp;quot;);
+        return 0;
+    }
+
+    string N16ToN2(string N16){
+        string n16;                         //转换成二进制数字，用字符串表示。
+        int i;
+        for (i = 2; i &amp;lt; 18; i++){
+            int a;
+            a = N16[i] - &#39;0&#39;;
+            switch (a)
+            {
+            case 0: n16 += &amp;quot;0000&amp;quot;; break;
+            case 1: n16 += &amp;quot;0001&amp;quot;; break;
+            case 2: n16 += &amp;quot;0010&amp;quot;; break;
+            case 3: n16 += &amp;quot;0011&amp;quot;; break;
+            case 4: n16 += &amp;quot;0100&amp;quot;; break;
+            case 5: n16 += &amp;quot;0101&amp;quot;; break;
+            case 6: n16 += &amp;quot;0110&amp;quot;; break;
+            case 7: n16 += &amp;quot;0111&amp;quot;; break;
+            case 8: n16 += &amp;quot;1000&amp;quot;; break;
+            case 9: n16 += &amp;quot;1001&amp;quot;; break;
+            case 17: n16 += &amp;quot;1010&amp;quot;; break;
+            case 18: n16 += &amp;quot;1011&amp;quot;; break;
+            case 19: n16 += &amp;quot;1100&amp;quot;; break;
+            case 20: n16 += &amp;quot;1101&amp;quot;; break;
+            case 21: n16 += &amp;quot;1110&amp;quot;; break;
+            case 22: n16 += &amp;quot;1111&amp;quot;; break;
+            }   //每个十六进制数可以表示成4个二进制数
+        }
+        return n16;
+    } 
+
+    string Etransform(string R){
+        string temp;
+        int i,j;
+        for (i = 1; i &amp;lt; 8; i++){
+            temp.push_back(R[4*i-1]);
+            temp.push_back(R[4*i]);
+        }
+        temp.push_back(R[31]);
+        temp.push_back(R[0]);
+        for (j = 0; j &amp;lt; 7; j++){
+            R.insert(6*j+5, temp, 2*j, 2);
+        }
+        R.push_back(temp[15]);
+        R.insert(0, temp,14,1);   //E变换，36位R变成48位
+        return R;
+    }
+
+    void getC0D0(string k, string&amp;amp; C0,string&amp;amp; D0){
+        C0.push_back(k[56]);        //64位密钥k 经PC-1拣选变换得到C0，D0
+        C0.push_back(k[48]);
+        C0.push_back(k[40]);
+        C0.push_back(k[32]);
+        C0.push_back(k[24]);
+        C0.push_back(k[16]);
+        C0.push_back(k[8]);
+        C0.push_back(k[0]);
+        C0.push_back(k[57]);
+        C0.push_back(k[49]);
+        C0.push_back(k[41]);
+        C0.push_back(k[33]);
+        C0.push_back(k[25]);
+        C0.push_back(k[17]);
+        C0.push_back(k[9]);
+        C0.push_back(k[1]);
+        C0.push_back(k[58]);
+        C0.push_back(k[50]);
+        C0.push_back(k[42]);
+        C0.push_back(k[34]);
+        C0.push_back(k[26]);
+        C0.push_back(k[18]);
+        C0.push_back(k[10]);
+        C0.push_back(k[2]);
+        C0.push_back(k[59]);
+        C0.push_back(k[51]);
+        C0.push_back(k[43]);
+        C0.push_back(k[35]);
+        D0.push_back(k[62]);
+        D0.push_back(k[54]);
+        D0.push_back(k[46]);
+        D0.push_back(k[38]);
+        D0.push_back(k[30]);
+        D0.push_back(k[22]);
+        D0.push_back(k[14]);
+        D0.push_back(k[6]);
+        D0.push_back(k[61]);
+        D0.push_back(k[53]);
+        D0.push_back(k[45]);
+        D0.push_back(k[37]);
+        D0.push_back(k[29]);
+        D0.push_back(k[21]);
+        D0.push_back(k[13]);
+        D0.push_back(k[5]);
+        D0.push_back(k[60]);
+        D0.push_back(k[52]);
+        D0.push_back(k[44]);
+        D0.push_back(k[36]);
+        D0.push_back(k[28]);
+        D0.push_back(k[20]);
+        D0.push_back(k[12]);
+        D0.push_back(k[4]);
+        D0.push_back(k[27]);
+        D0.push_back(k[19]);
+        D0.push_back(k[11]);
+        D0.push_back(k[3]);     //拣选结束 得到C0,D0
+    } 
+
+    string STransform(string k, string e){
+        int i,j,a,b,y;
+        string s;           //s为密钥K与e变换后的R取异或的结果
+        string S;
+        string m;       //对应矩阵横坐标
+        string n;       //对应矩阵纵坐标
+        char c;
+        for (i = 0; i &amp;lt; 48; i++){
+            if (k[i] == e[i]) c = &#39;0&#39;;//异或操作
+            else c = &#39;1&#39;;
+            s.push_back(c);    
+        }
+        int S1[4][16] = { { 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7 },
+                        { 0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8 },
+                        { 4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0 },           //S1
+                        { 15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 15, 10, 0, 6, 13 } };
+
+        int S2[4][16] = { { 15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10 },
+                        { 3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5 },
+                        { 0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15 },           //S2
+                        { 13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9 } };
+
+        int S3[4][16] = { { 10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8 },
+                        { 13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1 },
+                        { 13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7 },           //S3
+                        { 1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12 } };
+
+        int S4[4][16] = { { 7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15 },
+                        { 13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9 },
+                        { 10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4 },           //S4
+                        { 3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14 } };
+
+        int S5[4][16] = { { 2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9 },
+                        { 14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6 },
+                        { 4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14 },           //S5
+                        { 11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3 } };
+
+        int S6[4][16] = { { 12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11 },
+                        { 10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8 },
+                        { 9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6 },           //S6
+                        { 4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13 } };
+
+        int S7[4][16] = { { 4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1 },
+                        { 13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6 },
+                        { 1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2 },           //S7
+                        { 6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12 } };
+
+        int S8[4][16] = { { 13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7 },
+                        { 1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2 },
+                        { 7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8 },           //S8
+                        { 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 } };
+
+        for (j = 0; j &amp;lt; 8; j++){  //8个S-盒
+            m.push_back(s[6 * j]);
+            m.push_back(s[6 * j + 5]);
+            n.insert(0, s, 6 * j, 4);
+            a = getInt(m);      //矩阵横坐标
+            b = getInt(n);      //矩阵纵坐标
+            switch (j)
+            {
+            case 0: y = S1[a][b]; break;
+            case 1: y = S2[a][b]; break;
+            case 2: y = S3[a][b]; break;
+            case 3: y = S4[a][b]; break;
+            case 4: y = S5[a][b]; break;
+            case 5: y = S6[a][b]; break;
+            case 6: y = S7[a][b]; break;
+            case 7: y = S8[a][b]; break;
+            }
+
+            S += getString(y);
+            m.erase();
+            n.erase();
+        }
+        return S;
+    }
+
+    int getInt(string str){
+        int n,temp,a,b,c,d;
+        temp = stoi(str);
+        a = temp % 10;
+        b = ((temp - a)/10) % 10;
+        c = ((temp - a - 10 * b)/100) % 10;
+        d = (temp - a - 10 * b - 100 * c) / 1000;
+        n = a + 2 * b + 4 * c + 8 * d;
+        return n;
+    }
+
+
+    string getString(int n){
+        string str;
+        switch (n)
+        {
+        case 0: str = &amp;quot;0000&amp;quot;; break;
+        case 1: str = &amp;quot;0001&amp;quot;; break;
+        case 2: str = &amp;quot;0010&amp;quot;; break;
+        case 3: str = &amp;quot;0011&amp;quot;; break;
+        case 4: str = &amp;quot;0100&amp;quot;; break;
+        case 5: str = &amp;quot;0101&amp;quot;; break;
+        case 6: str = &amp;quot;0110&amp;quot;; break;
+        case 7: str = &amp;quot;0111&amp;quot;; break;
+        case 8: str = &amp;quot;1000&amp;quot;; break;
+        case 9: str = &amp;quot;1001&amp;quot;; break;
+        case 10: str = &amp;quot;1010&amp;quot;; break;
+        case 11: str = &amp;quot;1011&amp;quot;; break;
+        case 12: str = &amp;quot;1100&amp;quot;; break;
+        case 13: str = &amp;quot;1101&amp;quot;; break;
+        case 14: str = &amp;quot;1110&amp;quot;; break;
+        case 15: str = &amp;quot;1111&amp;quot;; break;
+        }
+        return str;
+    }
+
+    string PTransform(string S,string L){
+        string strP;
+        string Ri;
+        int i,c;
+        strP.push_back(S[15]);
+        strP.push_back(S[6]);
+        strP.push_back(S[19]);
+        strP.push_back(S[20]);
+        strP.push_back(S[28]);
+        strP.push_back(S[11]);
+        strP.push_back(S[27]);
+        strP.push_back(S[16]);
+        strP.push_back(S[0]);
+        strP.push_back(S[14]);
+        strP.push_back(S[22]);
+        strP.push_back(S[25]);
+        strP.push_back(S[4]);
+        strP.push_back(S[17]);
+        strP.push_back(S[30]);
+        strP.push_back(S[9]);
+        strP.push_back(S[1]);
+        strP.push_back(S[7]);
+        strP.push_back(S[23]);
+        strP.push_back(S[13]);
+        strP.push_back(S[31]);
+        strP.push_back(S[26]);
+        strP.push_back(S[2]);
+        strP.push_back(S[8]);
+        strP.push_back(S[18]);
+        strP.push_back(S[12]);
+        strP.push_back(S[29]);
+        strP.push_back(S[5]);
+        strP.push_back(S[21]);
+        strP.push_back(S[10]);
+        strP.push_back(S[3]);
+        strP.push_back(S[24]);
+        for (i = 0; i &amp;lt; 32; i++){
+        //异或操作
+            if (strP[i] == L[i]) c = &#39;0&#39;;
+            else c = &#39;1&#39;;
+            Ri.push_back(c);
+        }
+        return Ri;
+    }
+
+    void Ftransform(string&amp;amp; L, string&amp;amp; R,string key,int i){
+        string temp;
+        string SS;      //表示S-盒输出
+        string EE;      //表示E变换输出
+        string LR;      //加密一次的密文（二进制形式）
+        string MW;     //输出的密文（十六进制形式）
+        string KEY;    //输出的密钥（十六进制形式） 
+        int j,m;
+        temp.insert(0, R);
+        EE.insert(0,Etransform(R));
+        SS.insert(0,STransform(key, EE));
+        R.erase();     //清空R
+        R.insert(0, PTransform(SS, L));
+        L.erase();       //清空L
+        L.insert(0, temp);       //R变成L
+        LR = L + R;
+        cout &amp;lt;&amp;lt; &amp;quot;密文是： &amp;quot;;
+        for (j = 0; j &amp;lt; 16; j++){
+            MW.erase();                         //初始化MW
+            MW.insert(0, LR, 4 * j, 4);     //LR每4位取出来成一个十六进制的字符
+            cout &amp;lt;&amp;lt; N2ToN16(MW);                //输出密文
+        }
+        cout &amp;lt;&amp;lt; endl;
+        cout &amp;lt;&amp;lt; &amp;quot;密钥是：&amp;quot;;
+        for (m = 0; m &amp;lt; 12; m++){
+            KEY.erase();
+            KEY.insert(0, key, 4 * m, 4);
+            cout &amp;lt;&amp;lt; N2ToN16(KEY);
+        }
+        cout &amp;lt;&amp;lt; endl;
+    }
+
+    string N2ToN16(string N2){
+        string N16;
+        int n; 
+        n = getInt(N2);         //转换为整数
+        switch (n)
+        {
+        case 0: N16.push_back(&#39;0&#39;); break;
+        case 1: N16.push_back(&#39;1&#39;); break;
+        case 2: N16.push_back(&#39;2&#39;); break;
+        case 3: N16.push_back(&#39;3&#39;); break;
+        case 4: N16.push_back(&#39;4&#39;); break;
+        case 5: N16.push_back(&#39;5&#39;); break;
+        case 6: N16.push_back(&#39;6&#39;); break;
+        case 7: N16.push_back(&#39;7&#39;); break;
+        case 8: N16.push_back(&#39;8&#39;); break;
+        case 9: N16.push_back(&#39;9&#39;); break;
+        case 10: N16.push_back(&#39;A&#39;); break;
+        case 11: N16.push_back(&#39;B&#39;); break;
+        case 12: N16.push_back(&#39;C&#39;); break;
+        case 13: N16.push_back(&#39;D&#39;); break;
+        case 14: N16.push_back(&#39;E&#39;); break;
+        case 15: N16.push_back(&#39;F&#39;); break;
+        }
+        return N16;
+    }
+
+    string getKey(string&amp;amp; Ci, string&amp;amp; Di,int i){
+        string C1;
+        string D1;
+        string key;
+        if (i == 1 || i == 2 || i == 9 || i == 16){   //当i=1,2,9,16时左移一位
+            C1.push_back(Ci[27]);
+            D1.push_back(Di[27]);
+            C1.insert(1, Ci, 0, 27);
+            D1.insert(1, Di, 0, 27);
+        }
+        else{                                       //其他情况左移两位
+            string temp1;
+            string temp2;
+            temp1.insert(0, Ci, 0, 2);
+            temp2.insert(0, Di, 0, 2);
+            C1.insert(0, temp1);
+            D1.insert(0, temp2);
+            C1.insert(2, Ci, 0, 26);
+            D1.insert(2, Di, 0, 26);
+        }
+        key.push_back(C1[13]);          //PC-2拣选变换
+        key.push_back(C1[16]);
+        key.push_back(C1[10]);
+        key.push_back(C1[23]);
+        key.push_back(C1[0]);
+        key.push_back(C1[4]);
+        key.push_back(C1[2]);
+        key.push_back(C1[27]);
+        key.push_back(C1[14]);
+        key.push_back(C1[5]);
+        key.push_back(C1[20]);
+        key.push_back(C1[9]);
+        key.push_back(C1[22]);
+        key.push_back(C1[18]);
+        key.push_back(C1[11]);
+        key.push_back(C1[3]);
+        key.push_back(C1[25]);
+        key.push_back(C1[7]);
+        key.push_back(C1[15]);
+        key.push_back(C1[6]);
+        key.push_back(C1[26]);
+        key.push_back(C1[19]);
+        key.push_back(C1[12]);
+        key.push_back(C1[1]);
+        key.push_back(D1[12]);
+        key.push_back(D1[23]);
+        key.push_back(D1[2]);
+        key.push_back(D1[8]);
+        key.push_back(D1[18]);
+        key.push_back(D1[26]);
+        key.push_back(D1[1]);
+        key.push_back(D1[11]);
+        key.push_back(D1[22]);
+        key.push_back(D1[16]);
+        key.push_back(D1[4]);
+        key.push_back(D1[19]);
+        key.push_back(D1[15]);
+        key.push_back(D1[20]);
+        key.push_back(D1[10]);
+        key.push_back(D1[27]);
+        key.push_back(D1[5]);
+        key.push_back(D1[24]);
+        key.push_back(D1[17]);
+        key.push_back(D1[13]);
+        key.push_back(D1[21]);
+        key.push_back(D1[7]);
+        key.push_back(D1[0]);
+        key.push_back(D1[3]);
+
+        Ci.erase();
+        Di.erase();
+        Ci.insert(0, C1);
+        Di.insert(0, D1);
+        return key;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UML之序列图</title>
+      <link>/zerobiron.github.io/post/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE/</link>
+      <pubDate>Fri, 27 Nov 2015 15:33:51 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE/</guid>
+      <description>
+
+&lt;p&gt;#序列图
+序列图（sequence diagram）重在表示系统内部一群小对象指尖的互动.一般采用双叉法同步分析用例图和类图，通过序列图来整合，调整三方面的图。&lt;/p&gt;
+
+&lt;h3 id=&#34;基本元素:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;基本元素&lt;/h3&gt;
+
+&lt;p&gt;包括对象、消息。&lt;/p&gt;
+
+&lt;h4 id=&#34;一群对象-object:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;一群对象(object)&lt;/h4&gt;
+
+&lt;p&gt;序列图是一张栅栏状的图形，展现出一群对象的一小段存活期间。对象之间的互动消息横跨在生命线(lifeline)上。&lt;/p&gt;
+
+&lt;h4 id=&#34;消息-message:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;消息(message)&lt;/h4&gt;
+
+&lt;p&gt;原来用例中的流程步骤拆解成对象之间的“消息”。位于线条上的长条矩形称为“执行说明(execution specification)”,用来表示对象收到消息后，会负责的一小段事情。&lt;/p&gt;
+
+&lt;h3 id=&#34;bce-模式:4e3f143dbb27759f7b269110ab10ee60&#34;&gt;BCE 模式&lt;/h3&gt;
+
+&lt;p&gt;ＢＣＥ模式(Boundary-Control-Entity Patterns)将对象分为三类：边界类、控制类和实体类。　　&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;边界类。隔离系统内外，参与者只能跟边界对象互动，不能直接发送消息给控制对象或实体对象。&lt;/li&gt;
+&lt;li&gt;控制类。对应者用例，用来控制用例执行期间的复杂运算或者业务逻辑(business logic)。&lt;/li&gt;
+&lt;li&gt;实体类。主要用来保存问题领域中的重要信息，封装了跟数据结构和数据存储有关的变化。　　&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果只是单纯对数据表进行增加、删除、修改、查询的话，可以不设置控对象，让边界对象直接发送消息给实体对象。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UML之类图</title>
+      <link>/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/</link>
+      <pubDate>Fri, 27 Nov 2015 15:29:56 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/</guid>
+      <description>
+
+&lt;h1 id=&#34;类图进阶知识:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;类图进阶知识&lt;/h1&gt;
+
+&lt;p&gt;从分析到设计。分析阶段重点在于领域概念、业务流程等。设计阶段则要注重实际工作平台上，承接分析阶段的类图、用例图、序列图加上开发人员的观点，最后生成可以交付给程序员的设计文件。&lt;/p&gt;
+
+&lt;h3 id=&#34;基础元素:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;基础元素&lt;/h3&gt;
+
+&lt;p&gt;####依赖关系
+依赖关系(dependency relationship)是一种暂时的、动态的关系，不需要被长期保存。如果两个对象之间已经存在静态关系时，优先使用静态关系交互，并且讲静态关系保存在数据库中。如果两个对象之间没有静态关系，以可以建立暂时性的依赖关系，以便进行交互，而且用完及丢，不用保存在数据库中。&lt;/p&gt;
+
+&lt;h4 id=&#34;泛化关系:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;泛化关系&lt;/h4&gt;
+
+&lt;p&gt;泛化关系是一种分类关系；对用一种概念的事物，区分为一般性的(general)和特定性的(specific),然后再构建起两类之间的一般性关系。&lt;/p&gt;
+
+&lt;h4 id=&#34;保护等级:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;保护等级&lt;/h4&gt;
+
+&lt;p&gt;虽然，通过泛化关系，子类可以集成父类已经定义好的属性、操作和关系。不过，要是父类讲成员定义成私有等级(private)的话，子类虽然还是可以继承，但是却无法在子类中直接访问私有成员。所以ＵＭＬ设置了“等级保护(protected)”的可见性，能见度介于私有等级和公有等级之间，专门配合泛化关系使用。保护等级的符号是“＃”。&lt;/p&gt;
+
+&lt;h4 id=&#34;抽象类:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;抽象类&lt;/h4&gt;
+
+&lt;p&gt;泛化架构中，有时候父类并不完整，所以无法生成对象，这种无法产子的类成为“抽象类(abstract class)”.抽象类名称用斜体字来表示。&lt;/p&gt;
+
+&lt;h4 id=&#34;类层级:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;类层级&lt;/h4&gt;
+
+&lt;p&gt;类层级(class-scoped)的属性与操作代表整个类共享一份属性，而且外界只要通过类就可以调用操作，不需要先生成对象。&lt;/p&gt;
+
+&lt;h4 id=&#34;公有类:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;公有类&lt;/h4&gt;
+
+&lt;p&gt;公有类(utility class)的属性和操作都是“类层级”的，所以不需要生成对象，就可以直接是使用公有类所提供的属性和操作。公有类图标是一半的矩形，类名称上标示 &amp;lt;&lt;tutility &gt;&amp;gt;,用来区分。&lt;/p&gt;
+
+&lt;p&gt;####　枚举类型
+枚举类型(enumeration),显示枚举值。矩形图标多个&amp;lt;&lt;enumeration&gt;&amp;gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;从面向对象到关系性数据库:a3341a72f4924e35fdf00d24a90899f4&#34;&gt;从面向对象到关系性数据库&lt;/h3&gt;
+
+&lt;p&gt;在ＵＭＬ中，系统以对象的方式在运行，当然也包含以对象的方式存储在数据库中。虽然面向对象数据库(Object-Oriented-Databasen, OODB)已经发展多年，但关系型数据库却是目前的主流技术。设计师可以选择在类中加入关系型数据库的“主键(Primart Key, PK)”和“外键(foreign key,　FK)”的概念，让实体类图可以一图两用，同时落实到程序代码和关系型数据库。特别注意，在面向对象的程序设计中，对象之间通过连接就可以连接到对方，因此类之间有静态关系，也就不需要额外加入键值，特别是外键的概念。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UML和OOAD</title>
+      <link>/zerobiron.github.io/post/UML%E5%92%8COOAD/</link>
+      <pubDate>Fri, 27 Nov 2015 15:28:32 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/UML%E5%92%8COOAD/</guid>
+      <description>
+
+&lt;h1 id=&#34;uml和ooad入门:29d3ba1129a7866e52293147e2d26111&#34;&gt;UML和OOAD入门&lt;/h1&gt;
+
+&lt;h3 id=&#34;简介:29d3ba1129a7866e52293147e2d26111&#34;&gt;简介&lt;/h3&gt;
+
+&lt;p&gt;教程采用三种图 类图（class diagram）、用例图(use case diagram)和序列图(sequence diagram).其他技术有
+ 1. 事务模式（transaction patterns）应用事务模式，快速绘制类图。
+ 2. 用例描述（use case description）针对用例图每个用例，以文字方式描述用例执行流程。
+ 3. BCE模式（Boundary-Control-Entity patterns）应用BCE模式，帮助绘制出序列图。&lt;/p&gt;
+
+&lt;p&gt;分析设计步骤：首先，由分析师交付一套分析阶段的类图、用例图和序列图的文件给设计师；接着，设计师根据这套分析文件，添加与实际技术有关的设计内容，生成另一套类图、用例图和序列图的设计文件给程序员。&lt;/p&gt;
+
+&lt;h3 id=&#34;类图:29d3ba1129a7866e52293147e2d26111&#34;&gt;类图&lt;/h3&gt;
+
+&lt;p&gt;类图(class diagram)用来表示系统内部的静态结构(static structure)。具体来说，开发人员可以通过类图的设计，将数以万行的程序代码分门别类，以构成系统内部的静态结构。&lt;br /&gt;
+现在通过去相比有了新的术语:模块变成类(class)、功能变成操作(operation)、变量变成属性(attribute).还有了新的划分方法：以前的做法是从功能的角度，把大功能、大流程分成数个模块；再把功能模块分成小功能、小流程，定出功能；然后在编写功能时，定义所需的变量。新的分法是，拿用户的领域术语当类，然后确定相关的操作和属性，最后将其封装在同一个类中。&lt;/p&gt;
+
+&lt;h4 id=&#34;分析师必学元素:29d3ba1129a7866e52293147e2d26111&#34;&gt;分析师必学元素&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;类&lt;br /&gt;
+寻找领域术语作为类名称。类图标为矩形，通常矩形分为三格:顶格放置类名称、中格放置属性、底格放置操作。
+· 属性。属性是数据项，所以需要指定它的类型（type），属性名称后接冒号隔开类型。若属性有默认值，可以在类型后面加上等号，然后标出默认值。&lt;br /&gt;
+· 操作。操作名称后面以小括号括起输入参数，然后可以在小括号后接冒号，标出返回参数的类型。&lt;br /&gt;
+· 可见性（visibility）。属性和操作名称前有加号“+”，用来表示访问等级。掌握私有（private）和公有（public）。&lt;/li&gt;
+&lt;li&gt;关联&lt;br /&gt;
+关联图标是实线，两个结合端点标注多重性。多重性的下限为0，上限是无限大（*），下限标示在前面，上限标示在后面，两个数字之间使用两个点（..）隔开。多对多的多重性拆分成两个一对多的关联。&lt;/li&gt;
+&lt;li&gt;组合关系&lt;br /&gt;
+表示强烈的整体-部分（whole-part）关系时整体端用实心菱形，未标示端表示部分端。具备这种关联叫组合关系（composition rela-tionship）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;事务模式:29d3ba1129a7866e52293147e2d26111&#34;&gt;事务模式&lt;/h4&gt;
+
+&lt;p&gt;领域概念非常多，建议分析师应用“事务模式”迅速勾勒出类图的雏型。&lt;br /&gt;
+事务模式强调以“事务（Transaction）”为中心，串起跟事务相关的事务明细（TransactionLineItem）、涉众（Participant）、地点（Place）、物品（Item）事务涉及的物品概念分为：“特定物品（SpecificItem）”和“物品（Item）”有时候不确定是否可以用“特定物品-事务”等，可以先加注释。事务本身含有时间因素，所以事务之后可能有“后续事务”。涉众表示一种身份，背后有真正的“参与者”。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu调节屏幕亮度</title>
+      <link>/zerobiron.github.io/post/Ubuntu%E8%B0%83%E8%8A%82%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6/</link>
+      <pubDate>Fri, 27 Nov 2015 15:24:54 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/Ubuntu%E8%B0%83%E8%8A%82%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6/</guid>
+      <description>
+
+&lt;h1 id=&#34;ubuntu14-10调节屏幕亮度:b836717b735f422fc60daeb38d6258c4&#34;&gt;Ubuntu14.10调节屏幕亮度&lt;/h1&gt;
+
+&lt;p&gt;命令行输入&lt;code&gt;sudo vim /etc/default/grub&lt;/code&gt;&lt;br&gt;
+找到&lt;br&gt;
+GRUB_CMDLINE_LINUX_DEFAULT=&amp;ldquo;quiet splash&amp;rdquo;&lt;br /&gt;
+GRUB_CMDLINE_LINUX=&amp;ldquo;&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;改为&lt;br&gt;
+GRUB_CMDLINE_LINUX_DEFAULT=&amp;ldquo;quiet splash acpi_osi=Linux&amp;rdquo;&lt;br&gt;
+GRUB_CMDLINE_LINUX=&amp;ldquo;acpi_osi=Linux acpi_backlight=vendor&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;保存&lt;/p&gt;
+
+&lt;p&gt;升级grub &lt;code&gt;sudo update-grub&lt;/code&gt;&lt;br&gt;
+之后重启电脑就可以用Fn调节屏幕亮度了。&lt;/p&gt;
+
+&lt;h3 id=&#34;补充:b836717b735f422fc60daeb38d6258c4&#34;&gt;补充&lt;/h3&gt;
+
+&lt;p&gt;设定亮度默认值&lt;/p&gt;
+
+&lt;p&gt;终端输入 &lt;code&gt;sudo gedit /etc/rc.local&lt;/code&gt;
+在打开文件里增加一句（加在exit 0之前）
+代码: &lt;code&gt;echo 500 &amp;gt; /sys/class/backlight/intel_backlight/brightness&lt;/code&gt;&lt;br /&gt;
+意思是默认值设为500，可更改为其他合适的数字。
+最后保存&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>sublime_text快捷键</title>
+      <link>/zerobiron.github.io/post/sublime_text%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Fri, 27 Nov 2015 11:55:21 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/sublime_text%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description>
+
+&lt;h1 id=&#34;sublime-text:86b3a916bfafdf014842cbeb962e574f&#34;&gt;Sublime Text&lt;/h1&gt;
+
+&lt;p&gt;最好用的编辑器之一&lt;/p&gt;
+
+&lt;h3 id=&#34;快捷键:86b3a916bfafdf014842cbeb962e574f&#34;&gt;快捷键&lt;/h3&gt;
+
+&lt;p&gt;好的文本编辑器有很多其中我选择了Sublime Text.以下是常用的快捷键。&lt;/p&gt;
+
+&lt;p&gt;Ctrl+D 选词 （反复按快捷键，即可继续向下同时选中下一个相同的文本进行同时编辑）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+G 跳转到相应的行&lt;/p&gt;
+
+&lt;p&gt;Ctrl+J 合并行（已选择需要合并的多行时）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+L 选择整行（按住-继续选择下行）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+M 光标移动至括号内开始或结束的位置&lt;/p&gt;
+
+&lt;p&gt;Ctrl+T 词互换&lt;/p&gt;
+
+&lt;p&gt;Ctrl+U 软撤销&lt;/p&gt;
+
+&lt;p&gt;Ctrl+P 查找当前项目中的文件和快速搜索；输入 @ 查找文件主标题/函数；或者输入 :
+跳转到文件某行；&lt;/p&gt;
+
+&lt;p&gt;Ctrl+R 快速列出/跳转到某个函数&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K Backspace 从光标处删除至行首&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K+B 开启/关闭侧边栏&lt;/p&gt;
+
+&lt;p&gt;Ctrl+KK 从光标处删除至行尾&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K+T 折叠属性&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K+U 改为大写&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K+L 改为小写&lt;/p&gt;
+
+&lt;p&gt;Ctrl+K+0 展开所有&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Enter 插入行后（快速换行）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Tab 当前窗口中的标签页切换&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+A 选择光标位置父标签对儿&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+D 复制光标所在整行，插入在该行之前&lt;/p&gt;
+
+&lt;p&gt;ctrl+shift+F 文件夹内查找，与普通编辑器不同的地方是sublime允许添加多个文件夹进行查找&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+K 删除整行&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+L 鼠标选中多行（按下快捷键），即可同时编辑这些行&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+M 选择括号内的内容（按住-继续选择父括号）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+P 打开命令面板&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+/ 注释已选择内容&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+↑可以移动此行代码，与上行互换&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+↓可以移动此行代码，与下行互换&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+[ 折叠代码&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+] 展开代码&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+Enter 光标前插入行&lt;/p&gt;
+
+&lt;p&gt;Ctrl+PageDown 、Ctrl+PageUp 文件按开启的前后顺序切换&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Z 撤销&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Y 恢复撤销&lt;/p&gt;
+
+&lt;p&gt;Ctrl+F2 设置/取消书签&lt;/p&gt;
+
+&lt;p&gt;Ctrl+/ 注释整行（如已选择内容，同“Ctrl+Shift+/”效果）&lt;/p&gt;
+
+&lt;p&gt;Ctrl+鼠标左键 可以同时选择要编辑的多处文本&lt;/p&gt;
+
+&lt;p&gt;Shift+鼠标右键（或使用鼠标中键）可以用鼠标进行竖向多行选择&lt;/p&gt;
+
+&lt;p&gt;Shift+F2 上一个书签&lt;/p&gt;
+
+&lt;p&gt;Shift+Tab 去除缩进&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+1（非小键盘）窗口分屏，恢复默认1屏&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+2 左右分屏-2列&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+3 左右分屏-3列&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+4 左右分屏-4列&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+5 等分4屏&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+8 垂直分屏-2屏&lt;/p&gt;
+
+&lt;p&gt;Alt+Shift+9 垂直分屏-3屏&lt;/p&gt;
+
+&lt;p&gt;Ctrl+Shift+分屏序号 将当前焦点页分配到分屏序号页&lt;/p&gt;
+
+&lt;p&gt;Alt+. 闭合当前标签&lt;/p&gt;
+
+&lt;p&gt;Alt+F3 选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑&lt;/p&gt;
+
+&lt;p&gt;Tab 缩进 自动完成&lt;/p&gt;
+
+&lt;p&gt;F2 下一个书签&lt;/p&gt;
+
+&lt;p&gt;F6 检测语法错误&lt;/p&gt;
+
+&lt;p&gt;F9 行排序(按a-z)&lt;/p&gt;
+
+&lt;p&gt;F11 全屏模式&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Jekyll快速开始</title>
+      <link>/zerobiron.github.io/post/Jekyll%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/</link>
+      <pubDate>Fri, 27 Nov 2015 11:49:14 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/Jekyll%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/</guid>
+      <description>
+
+&lt;h1 id=&#34;jekyll-简单的博客生成工具:471405c134ce06a4e1511e52328587a6&#34;&gt;Jekyll ——简单的博客生成工具&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://jekyllrb.com/&#34; title=&#34;jekyll&#34;&gt;Jekyll&lt;/a&gt;是一个开源的博客生成工具，类似WordPress，但又完全不同。正如官网介绍“Transform your plain text into static websites and blogs.”
+jekyll只能生成静态的页面，无需数据库的支持。另外可以配合第三方服务,例如&lt;a href=&#34;https://disqus.com/&#34; title=&#34;Disqus&#34;&gt;Disqus&lt;/a&gt; （提供博客评论服务）。最关键的是jekyll可以免费部署在Github上，而且可以绑定自己的域名。&lt;/p&gt;
+
+&lt;h3 id=&#34;安装:471405c134ce06a4e1511e52328587a6&#34;&gt;安装&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;首先确保有正确的环境&lt;/li&gt;
+&lt;li&gt;Ruby&lt;/li&gt;
+&lt;li&gt;RubyGems&lt;/li&gt;
+&lt;li&gt;Mac or Linux  windows没有测试&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;NodeJS 或者其他支持JavaScript的平台也可以（自己在这里吃了亏）&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通过RubyGems安装jekll
+&lt;code&gt;$ gem install jekyll&lt;/code&gt;
+安装后就可以开始搭建blog了&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;使用jekyll-bootstrap工具:471405c134ce06a4e1511e52328587a6&#34;&gt;使用Jekyll Bootstrap工具&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;为了方便我是直接选择了用&lt;a href=&#34;http://jekyllbootstrap.com/&#34; title=&#34;Jekyll Bootstrap&#34;&gt;Jekyll Bootstrap&lt;/a&gt; 简单快捷还有很多模板可以使用或参考。
+首先要有一个github的账户，然后新建仓库命名为USERNAME.github.io （USERNAME换成自己的用户名）
+在本地fork代码安装Jekyll-Bootstrap&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/plusjade/jekyll-bootstrap.git XXX        #克隆git到本地命名为XXX
+$ cd XXX     #进入该目录
+$ gi t remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这时你已经有了自己博客了，怎么样很简单吧。
+运行&lt;code&gt;$ jekyll serve&lt;/code&gt;
+测试成功&lt;/p&gt;
+
+&lt;h3 id=&#34;发表文章:471405c134ce06a4e1511e52328587a6&#34;&gt;发表文章&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-新建一个帖子-post:471405c134ce06a4e1511e52328587a6&#34;&gt;1. 新建一个帖子（post）&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;$ rake post tilte=&amp;quot;Hello World&amp;quot;&lt;/code&gt;jekyll会自动新建一个文件默认名是时间。&lt;/p&gt;
+
+&lt;h4 id=&#34;2-新建一个页面-pages:471405c134ce06a4e1511e52328587a6&#34;&gt;2. 新建一个页面（pages）&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;除了文章外还能新建页面
+&lt;code&gt;$ rake page name=&amp;quot;about.md&amp;quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;新建嵌套页面
+&lt;code&gt;$ rake page name=&amp;quot;pages/about&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&#34;3-发布:471405c134ce06a4e1511e52328587a6&#34;&gt;3. 发布&lt;/h4&gt;
+
+&lt;p&gt;写完文章后就要发布了，通过git可以很容易的完成。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git add .
+$ git commit -m &amp;quot;Add new content&amp;quot;
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;4-个性化:471405c134ce06a4e1511e52328587a6&#34;&gt;4. 个性化&lt;/h4&gt;
+
+&lt;p&gt;用人家的模板有了自己的博客对一般不想折腾的够了，但是有些朋友会有自己的创意想改动一些。Jekyll Bootstrap
+支持定制。除了有很多主题供选择外有一些具体的设置。如设置博客地址格式、开启评论功能、设置基本路径、提供分析等等。总之个人觉得对一般的需求都可以满足。想要更高级的设置还可以看到Jekyll Bootstrap提供了各种可用的API，可以调用让自己的博客更加漂亮。&lt;/p&gt;
+
+&lt;h4 id=&#34;5-补充:471405c134ce06a4e1511e52328587a6&#34;&gt;5. 补充&lt;/h4&gt;
+
+&lt;p&gt;不知怎么直接调用jekyll的官方引擎_jekyll serve_生成静态html,结果显示某些代码支持的不好。有网友说是官方引擎和github pages的自己的引擎有些差别，markdown的解析器不同,导致用官方jekyll测试生效，推到github pages后却不会生效。所以为了发布到github上文章正确可以在本地搭建github pages本地环境预览一下。[搭建方法][&lt;a href=&#34;https://help.github.com/articles/using-jekyll-with-pages&#34;&gt;https://help.github.com/articles/using-jekyll-with-pages&lt;/a&gt;] 试了下发现果然用github pages的引擎比较好&lt;/p&gt;
+
+&lt;h3 id=&#34;总结:471405c134ce06a4e1511e52328587a6&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;用Jekyll Bootstrap真的很方便。第一次写点儿算是教程的东西大部分来自网络。其实就是给自己折腾做个纪念吧，毕竟刚刚接触这个很好奇也很有动力。
+感谢Jekyll Bootstrap的开发者们，在模板介绍页面开发者们提到这是个未完成的模板，想要完成它需要大家的共同努力，所以少年们可以试试帮助开发一下。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>First_Blog</title>
+      <link>/zerobiron.github.io/post/First_Blog/</link>
+      <pubDate>Fri, 27 Nov 2015 11:44:51 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/First_Blog/</guid>
+      <description>
+
+&lt;h1 id=&#34;第一篇:4b3058754254b38896fc26b5acfa3c9e&#34;&gt;第一篇&lt;/h1&gt;
+
+&lt;p&gt;这是我的第一篇blog，前后弄了一天吧，虽然过程惨不忍睹但是相信结果还是不错的。&lt;/p&gt;
+
+&lt;h3 id=&#34;起源:4b3058754254b38896fc26b5acfa3c9e&#34;&gt;起源&lt;/h3&gt;
+
+&lt;p&gt;人生总是充满了巧合，一个个巧合让我们的人生充满了未知与挑战。之前与同学的一次交流让我了解了markdown，之后一直没机会，直到最近想要学习的时候才再一次想起了它。因为打算入IT的坑，所以有很多东西要学要记录，于是markdown便成了相对最佳方式。&lt;/p&gt;
+
+&lt;h3 id=&#34;坎坷的经过:4b3058754254b38896fc26b5acfa3c9e&#34;&gt;坎坷的经过&lt;/h3&gt;
+
+&lt;p&gt;用markdown写作肯定不能放在QQ空间之类的吧。平时在搜索的时候那些关键的技术类文章大多数是某个人的博客，所以我首先想到的就是要有一个自己的博客。然后选择了某博客网站，后来发现不能支持markdown，完全不靠谱，弃之。&lt;/p&gt;
+
+&lt;p&gt;后来看到了“用github搭建自己的blog”的文章，感觉还不错于是按给的教程开始做，做了好久又发现教程有些过时了，呵呵。想想现在信息时代什么都发展的很快那些看似正确的教程往往不能达到目的。遂弃之。&lt;/p&gt;
+
+&lt;h3 id=&#34;over:4b3058754254b38896fc26b5acfa3c9e&#34;&gt;over&lt;/h3&gt;
+
+&lt;p&gt;时间来到了一天中的下午，还是没有收获。再搜索一次看到了有很多用jekyll搭建blog的，这次直接上官网查看。官网总有最新的使用说明，接着一步步来到了
+jekyll boostrap的网站又有了新发现。原来通过jekyll boostrap的模板很快就可以建好自己的blog，方便至极。经过不断的测试、修改终于完成了一小步。现在暂时不会关心样式的问题，能记录就可以了。&lt;/p&gt;
+
+&lt;p&gt;2015.03.11&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/zerobiron.github.io/about/</link>
+      <pubDate>Fri, 27 Nov 2015 11:04:04 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/about/</guid>
+      <description>
+
+&lt;h3 id=&#34;about-me:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;About Me&lt;/h3&gt;
+
+&lt;p&gt;Test a pos
+asdasdfwwgt&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

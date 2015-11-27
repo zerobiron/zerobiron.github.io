@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+	  
+	  UML和OOAD | Zerobiron-Learn more write less
+	  
+  </title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/uikit/2.21.0/css/uikit.min.css">
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/8.6/styles/github.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+	<div class="uk-block uk-block-large uk-block-muted">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          
+          <div id="header" class="clearfix">
+            <div class="uk-float-left">
+              <h2><a href="/">Zerobiron-Learn more write less</a></h2>
+            </div>
+            <div class="uk-float-right">
+              <a href="/" class="uk-button">Home</a>
+              
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+                  <a href="/zerobiron.github.io/about/" class="uk-button">About</a>
+                
+              
+            </div>
+          </div>
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+<div class="uk-block uk-block-default">
+	<div class="uk-container uk-container-center">
+		<div class="uk-grid">
+			<div class="uk-width-1-10"></div>
+			<div class="uk-width-8-10">
+				<article class="uk-article">
+					<h1 class="uk-article-title" style="font-size: 23px;">
+						UML和OOAD
+					</h1>
+					
+					<p class="uk-article-meta">Posted on Fri, Nov 277, 27116 |  <a href="/zerobiron.github.io/tags/uml" class="uk-button uk-button-mini">#UML</a></p>
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+          Unless otherwise indicated, the text of documents in this site is available under the <a href="https://creativecommons.org/licenses/by/3.0/deed">Creative Commons Attribution 3.0 Unported License</a>, or any later version. Copyright -2016 Zerobiron.
+        </div>
+					
+
+<h1 id="uml和ooad入门:29d3ba1129a7866e52293147e2d26111">UML和OOAD入门</h1>
+
+<h3 id="简介:29d3ba1129a7866e52293147e2d26111">简介</h3>
+
+<p>教程采用三种图 类图（class diagram）、用例图(use case diagram)和序列图(sequence diagram).其他技术有
+ 1. 事务模式（transaction patterns）应用事务模式，快速绘制类图。
+ 2. 用例描述（use case description）针对用例图每个用例，以文字方式描述用例执行流程。
+ 3. BCE模式（Boundary-Control-Entity patterns）应用BCE模式，帮助绘制出序列图。</p>
+
+<p>分析设计步骤：首先，由分析师交付一套分析阶段的类图、用例图和序列图的文件给设计师；接着，设计师根据这套分析文件，添加与实际技术有关的设计内容，生成另一套类图、用例图和序列图的设计文件给程序员。</p>
+
+<h3 id="类图:29d3ba1129a7866e52293147e2d26111">类图</h3>
+
+<p>类图(class diagram)用来表示系统内部的静态结构(static structure)。具体来说，开发人员可以通过类图的设计，将数以万行的程序代码分门别类，以构成系统内部的静态结构。<br />
+现在通过去相比有了新的术语:模块变成类(class)、功能变成操作(operation)、变量变成属性(attribute).还有了新的划分方法：以前的做法是从功能的角度，把大功能、大流程分成数个模块；再把功能模块分成小功能、小流程，定出功能；然后在编写功能时，定义所需的变量。新的分法是，拿用户的领域术语当类，然后确定相关的操作和属性，最后将其封装在同一个类中。</p>
+
+<h4 id="分析师必学元素:29d3ba1129a7866e52293147e2d26111">分析师必学元素</h4>
+
+<ol>
+<li>类<br />
+寻找领域术语作为类名称。类图标为矩形，通常矩形分为三格:顶格放置类名称、中格放置属性、底格放置操作。
+· 属性。属性是数据项，所以需要指定它的类型（type），属性名称后接冒号隔开类型。若属性有默认值，可以在类型后面加上等号，然后标出默认值。<br />
+· 操作。操作名称后面以小括号括起输入参数，然后可以在小括号后接冒号，标出返回参数的类型。<br />
+· 可见性（visibility）。属性和操作名称前有加号“+”，用来表示访问等级。掌握私有（private）和公有（public）。</li>
+<li>关联<br />
+关联图标是实线，两个结合端点标注多重性。多重性的下限为0，上限是无限大（*），下限标示在前面，上限标示在后面，两个数字之间使用两个点（..）隔开。多对多的多重性拆分成两个一对多的关联。</li>
+<li>组合关系<br />
+表示强烈的整体-部分（whole-part）关系时整体端用实心菱形，未标示端表示部分端。具备这种关联叫组合关系（composition rela-tionship）</li>
+</ol>
+
+<h4 id="事务模式:29d3ba1129a7866e52293147e2d26111">事务模式</h4>
+
+<p>领域概念非常多，建议分析师应用“事务模式”迅速勾勒出类图的雏型。<br />
+事务模式强调以“事务（Transaction）”为中心，串起跟事务相关的事务明细（TransactionLineItem）、涉众（Participant）、地点（Place）、物品（Item）事务涉及的物品概念分为：“特定物品（SpecificItem）”和“物品（Item）”有时候不确定是否可以用“特定物品-事务”等，可以先加注释。事务本身含有时间因素，所以事务之后可能有“后续事务”。涉众表示一种身份，背后有真正的“参与者”。</p>
+
+				</article>
+			</div>
+			<div class="uk-width-1-10"></div>
+		</div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        
+        <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+          <h3 class="uk-panel-title">Related Posts</h3>
+          
+          
+          <ul class="uk-list uk-list-striped">
+            
+              
+              
+              
+            
+              
+              
+              
+                <li><a href="/zerobiron.github.io/post/UML%E4%B9%8B%E5%BA%8F%E5%88%97%E5%9B%BE/">UML之序列图</a></li>
+              
+            
+              
+              
+              
+                <li><a href="/zerobiron.github.io/post/UML%E4%B9%8B%E7%B1%BB%E5%9B%BE/">UML之类图</a></li>
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+          </ul>
+        </div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+    <div class="uk-grid">
+      <div class="uk-width-1-10"></div>
+      <div class="uk-width-8-10">
+        <div id="disqus_thread" data-uk-scrollspy></div>
+      </div>
+      <div class="uk-width-1-10"></div>
+    </div>
+	</div>
+</div>
+
+	<div id="footer" class="uk-block uk-block-large uk-block-muted" data-uk-scrollspy="{repeat: true, delay: 600}">
+		<div class="uk-container uk-container-center">
+			<div class="uk-grid">
+				<div class="uk-width-1-10"></div>
+				<div class="uk-width-8-10">
+          <div class="uk-grid">
+            <div class="uk-width-1-1">
+              &copy; Copyright -2016  Zerobiron
+            </div>
+            <div class="uk-width-1-1">
+              Powered by <a href="http://gohugo.io">Hugo</a> | Themed by <a href="https://github.com/leopku/hugo-theme-next">NeXT</a>
+            </div>
+          </div>
+
+				</div>
+				<div class="uk-width-1-10"></div>
+			</div>
+		</div>
+	</div>
+
+	<script src="//cdn.jsdelivr.net/jquery/1.11.3/jquery.min.js"></script>
+	<script src="//cdn.jsdelivr.net/uikit/2.21.0/js/uikit.min.js"></script>
+	<script src="//cdn.jsdelivr.net/highlight.js/8.6.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', '', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+(function() {
+
+  if (window.location.hostname == "localhost") { return; };
+
+  var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    ds_loaded = false;
+  var disqus_shortname = '';
+    disqus_url = '\/zerobiron.github.io\/post\/UML%E5%92%8COOAD\/';
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+  $('[data-uk-scrollspy]').on('init.uk.scrollspy', function () {
+    if (!ds_loaded){
+      ds_loaded = true;
+      document.getElementById('disqus_thread').appendChild(dsq);
+    }
+  })
+
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
