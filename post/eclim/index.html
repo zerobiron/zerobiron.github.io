@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>
 	  
-	  sublime_text快捷键 | Zerobiron-Learn more write less
+	  Vim与Eclipse的结合 | Zerobiron-Learn more write less
 	  
   </title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/uikit/2.21.0/css/uikit.min.css">
@@ -66,133 +66,74 @@
 			<div class="uk-width-8-10">
 				<article class="uk-article">
 					<h1 class="uk-article-title" style="font-size: 23px;">
-						sublime_text快捷键
+						Vim与Eclipse的结合
 					</h1>
 					
-					<p class="uk-article-meta">Posted on Fri, Nov 277, 27116 |  <a href="/zerobiron.github.io/tags/tools" class="uk-button uk-button-mini">#Tools</a></p>
+					<p class="uk-article-meta">Posted on Fri, Nov 127, 12126 |  <a href="/zerobiron.github.io/tags/tools" class="uk-button uk-button-mini">#Tools</a></p>
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
           Unless otherwise indicated, the text of documents in this site is available under the <a href="https://creativecommons.org/licenses/by/3.0/deed">Creative Commons Attribution 3.0 Unported License</a>, or any later version. Copyright -2016 Zerobiron.
         </div>
 					
 
-<h1 id="sublime-text:86b3a916bfafdf014842cbeb962e574f">Sublime Text</h1>
+<h1 id="vim与eclipse的结合:9a64dc308a20d78c18b68fe6346e7b3c">Vim与Eclipse的结合</h1>
 
-<p>最好用的编辑器之一</p>
+<p>既享受用vim写代码的畅快，又喜欢Eclipse的方便，人们想为什么不能二者得兼？于是便有牛人实现了这一神器——eclim</p>
 
-<h3 id="快捷键:86b3a916bfafdf014842cbeb962e574f">快捷键</h3>
+<p>开始学习Java但是神器Eclipse在Ubuntu下运行不流畅，十分吃内存。于是就想找个替代品。终于找到了eclim这个1+1&gt;2的软件。</p>
 
-<p>好的文本编辑器有很多其中我选择了Sublime Text.以下是常用的快捷键。</p>
+<h3 id="安装:9a64dc308a20d78c18b68fe6346e7b3c">安装</h3>
 
-<p>Ctrl+D 选词 （反复按快捷键，即可继续向下同时选中下一个相同的文本进行同时编辑）</p>
+<p>eclim的官网<a href="http://eclim.org/index.html#">http://eclim.org/index.html#</a>
+里面的内容很多也算详细，但是安装过程中还是出了不少问题。</p>
 
-<p>Ctrl+G 跳转到相应的行</p>
+<h4 id="注意版本:9a64dc308a20d78c18b68fe6346e7b3c">注意版本</h4>
 
-<p>Ctrl+J 合并行（已选择需要合并的多行时）</p>
+<p>eclim的要求是先安装</p>
 
-<p>Ctrl+L 选择整行（按住-继续选择下行）</p>
+<ul>
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> 1.7 or greater</li>
+<li><a href="http://www.vim.org/download.php">Vim 7.1</a> or greater</li>
+<li><a href="http://eclipse.org/downloads/index.php">Eclipse 4.5.x (Mars)</a></li>
+<li>Mac和Linux用户要有make和gcc</li>
+</ul>
 
-<p>Ctrl+M 光标移动至括号内开始或结束的位置</p>
+<p>这里要注意，有两个问题：
+1. jdk的版本要1.7或更高。之前安装的是Java8，Java8有个新特性是移除PermGen取而代之的是Metaspace.详细的资料参考这篇文章<a href="http://javaeesupportpatterns.blogspot.co.uk/2013/02/java-8-from-permgen-to-metaspace.html">Java 8: From PermGen to Metaspace</a> 在安装过程中遇到问题是 对JVM的参数：PermSize 和 MaxPermSize 会被忽略并给出警告，而安装貌似需要设置MaxPermSize这个参数，结果就是报错。无奈最后把JDK-8完全卸载了，重新安装JDK-7(对应Java7)。
+2. 现在的eclim版本是2.5.0支持的Eclipse是4.5.0. 我之前安装的4.5.1由于安装包自动安装导致Eclipse的根目录找不清楚，无法继续安装。最后还是换成了4.5.0版本才能安装成功。</p>
 
-<p>Ctrl+T 词互换</p>
+<p>其他按照官方文档一步步来就可以。</p>
 
-<p>Ctrl+U 软撤销</p>
+<h3 id="使用eclim完成项目-以java为例:9a64dc308a20d78c18b68fe6346e7b3c">使用eclim完成项目(以Java为例)</h3>
 
-<p>Ctrl+P 查找当前项目中的文件和快速搜索；输入 @ 查找文件主标题/函数；或者输入 :
-跳转到文件某行；</p>
+<p>打开vim编辑器,输入<code>:ProjectCreate /path/to/my_project -n java</code> 指令会新建一个java项目目录和基本的文件。建立项目后还可以查看已经建立的项目 <code>:ProjectList</code> 返回结果<code>rojectName - (open|closed) - /project/root/path</code></p>
 
-<p>Ctrl+R 快速列出/跳转到某个函数</p>
+<h4 id="添加项目源目录:9a64dc308a20d78c18b68fe6346e7b3c">添加项目源目录</h4>
 
-<p>Ctrl+K Backspace 从光标处删除至行首</p>
+<p>假定我们要在src目录下写java项目，首先要要在src目录下建立个Java文件夹。之后编辑.classpath文件 <code>vim /path/to/my_project/.classpath</code> 文件应该像是这样</p>
 
-<p>Ctrl+K+B 开启/关闭侧边栏</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;classpath&gt;
+&lt;classpathentry kind=&quot;con&quot; path=&quot;org.eclipse.jdt.launching.JRE_CONTAINER&quot;/&gt;
+&lt;classpathentry kind=&quot;output&quot; path=&quot;bin&quot;/&gt;
+</code></pre>
 
-<p>Ctrl+KK 从光标处删除至行尾</p>
+<p><classpathentry kind="src" path="src/java"/>
+</classpath></p>
 
-<p>Ctrl+K+T 折叠属性</p>
+<h4 id="开始写代码:9a64dc308a20d78c18b68fe6346e7b3c">开始写代码</h4>
 
-<p>Ctrl+K+U 改为大写</p>
+<p>在之前创建的目录src/Java下用vim新建个TestMain.java</p>
 
-<p>Ctrl+K+L 改为小写</p>
+<p>在vim的编辑模式可以按快捷键<br />
+<code>Ctrl + x</code> 自动补全<br />
+<code>Ctrl + u</code> 返回最初的状态</p>
 
-<p>Ctrl+K+0 展开所有</p>
+<p>之后编辑完毕执行 <code>:java</code> 开始编译执行
+更多特性等待发掘。</p>
 
-<p>Ctrl+Enter 插入行后（快速换行）</p>
+<h3 id="结语:9a64dc308a20d78c18b68fe6346e7b3c">结语</h3>
 
-<p>Ctrl+Tab 当前窗口中的标签页切换</p>
-
-<p>Ctrl+Shift+A 选择光标位置父标签对儿</p>
-
-<p>Ctrl+Shift+D 复制光标所在整行，插入在该行之前</p>
-
-<p>ctrl+shift+F 文件夹内查找，与普通编辑器不同的地方是sublime允许添加多个文件夹进行查找</p>
-
-<p>Ctrl+Shift+K 删除整行</p>
-
-<p>Ctrl+Shift+L 鼠标选中多行（按下快捷键），即可同时编辑这些行</p>
-
-<p>Ctrl+Shift+M 选择括号内的内容（按住-继续选择父括号）</p>
-
-<p>Ctrl+Shift+P 打开命令面板</p>
-
-<p>Ctrl+Shift+/ 注释已选择内容</p>
-
-<p>Ctrl+Shift+↑可以移动此行代码，与上行互换</p>
-
-<p>Ctrl+Shift+↓可以移动此行代码，与下行互换</p>
-
-<p>Ctrl+Shift+[ 折叠代码</p>
-
-<p>Ctrl+Shift+] 展开代码</p>
-
-<p>Ctrl+Shift+Enter 光标前插入行</p>
-
-<p>Ctrl+PageDown 、Ctrl+PageUp 文件按开启的前后顺序切换</p>
-
-<p>Ctrl+Z 撤销</p>
-
-<p>Ctrl+Y 恢复撤销</p>
-
-<p>Ctrl+F2 设置/取消书签</p>
-
-<p>Ctrl+/ 注释整行（如已选择内容，同“Ctrl+Shift+/”效果）</p>
-
-<p>Ctrl+鼠标左键 可以同时选择要编辑的多处文本</p>
-
-<p>Shift+鼠标右键（或使用鼠标中键）可以用鼠标进行竖向多行选择</p>
-
-<p>Shift+F2 上一个书签</p>
-
-<p>Shift+Tab 去除缩进</p>
-
-<p>Alt+Shift+1（非小键盘）窗口分屏，恢复默认1屏</p>
-
-<p>Alt+Shift+2 左右分屏-2列</p>
-
-<p>Alt+Shift+3 左右分屏-3列</p>
-
-<p>Alt+Shift+4 左右分屏-4列</p>
-
-<p>Alt+Shift+5 等分4屏</p>
-
-<p>Alt+Shift+8 垂直分屏-2屏</p>
-
-<p>Alt+Shift+9 垂直分屏-3屏</p>
-
-<p>Ctrl+Shift+分屏序号 将当前焦点页分配到分屏序号页</p>
-
-<p>Alt+. 闭合当前标签</p>
-
-<p>Alt+F3 选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑</p>
-
-<p>Tab 缩进 自动完成</p>
-
-<p>F2 下一个书签</p>
-
-<p>F6 检测语法错误</p>
-
-<p>F9 行排序(按a-z)</p>
-
-<p>F11 全屏模式</p>
+<p>elicm 感觉应该还不错功能很强大而且主要的是没有Eclipse那么大，正合我意。</p>
 
 				</article>
 			</div>
@@ -211,8 +152,6 @@
               
               
               
-                <li><a href="/zerobiron.github.io/post/eclim/">Vim与Eclipse的结合</a></li>
-              
             
               
               
@@ -236,6 +175,8 @@
             
               
               
+              
+                <li><a href="/zerobiron.github.io/post/sublime_text%E5%BF%AB%E6%8D%B7%E9%94%AE/">sublime_text快捷键</a></li>
               
             
               
@@ -325,7 +266,7 @@ ga('send', 'pageview');
     dsq.async = true;
     ds_loaded = false;
   var disqus_shortname = '';
-    disqus_url = '\/zerobiron.github.io\/post\/sublime_text%E5%BF%AB%E6%8D%B7%E9%94%AE\/';
+    disqus_url = '\/zerobiron.github.io\/post\/eclim\/';
   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 
   $('[data-uk-scrollspy]').on('init.uk.scrollspy', function () {

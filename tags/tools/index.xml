@@ -6,8 +6,78 @@
     <description>Recent content in Tools on Zerobiron-Learn more write less</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Fri, 27 Nov 2015 11:55:21 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 12 Dec 2015 23:41:19 +0800</lastBuildDate>
     <atom:link href="zerobiron.github.io/tags/tools/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Vim与Eclipse的结合</title>
+      <link>/zerobiron.github.io/post/eclim/</link>
+      <pubDate>Sat, 12 Dec 2015 23:41:19 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/eclim/</guid>
+      <description>
+
+&lt;h1 id=&#34;vim与eclipse的结合:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;Vim与Eclipse的结合&lt;/h1&gt;
+
+&lt;p&gt;既享受用vim写代码的畅快，又喜欢Eclipse的方便，人们想为什么不能二者得兼？于是便有牛人实现了这一神器——eclim&lt;/p&gt;
+
+&lt;p&gt;开始学习Java但是神器Eclipse在Ubuntu下运行不流畅，十分吃内存。于是就想找个替代品。终于找到了eclim这个1+1&amp;gt;2的软件。&lt;/p&gt;
+
+&lt;h3 id=&#34;安装:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;安装&lt;/h3&gt;
+
+&lt;p&gt;eclim的官网&lt;a href=&#34;http://eclim.org/index.html#&#34;&gt;http://eclim.org/index.html#&lt;/a&gt;
+里面的内容很多也算详细，但是安装过程中还是出了不少问题。&lt;/p&gt;
+
+&lt;h4 id=&#34;注意版本:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;注意版本&lt;/h4&gt;
+
+&lt;p&gt;eclim的要求是先安装&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/index.html&#34;&gt;Java Development Kit&lt;/a&gt; 1.7 or greater&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.vim.org/download.php&#34;&gt;Vim 7.1&lt;/a&gt; or greater&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://eclipse.org/downloads/index.php&#34;&gt;Eclipse 4.5.x (Mars)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Mac和Linux用户要有make和gcc&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里要注意，有两个问题：
+1. jdk的版本要1.7或更高。之前安装的是Java8，Java8有个新特性是移除PermGen取而代之的是Metaspace.详细的资料参考这篇文章&lt;a href=&#34;http://javaeesupportpatterns.blogspot.co.uk/2013/02/java-8-from-permgen-to-metaspace.html&#34;&gt;Java 8: From PermGen to Metaspace&lt;/a&gt; 在安装过程中遇到问题是 对JVM的参数：PermSize 和 MaxPermSize 会被忽略并给出警告，而安装貌似需要设置MaxPermSize这个参数，结果就是报错。无奈最后把JDK-8完全卸载了，重新安装JDK-7(对应Java7)。
+2. 现在的eclim版本是2.5.0支持的Eclipse是4.5.0. 我之前安装的4.5.1由于安装包自动安装导致Eclipse的根目录找不清楚，无法继续安装。最后还是换成了4.5.0版本才能安装成功。&lt;/p&gt;
+
+&lt;p&gt;其他按照官方文档一步步来就可以。&lt;/p&gt;
+
+&lt;h3 id=&#34;使用eclim完成项目-以java为例:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;使用eclim完成项目(以Java为例)&lt;/h3&gt;
+
+&lt;p&gt;打开vim编辑器,输入&lt;code&gt;:ProjectCreate /path/to/my_project -n java&lt;/code&gt; 指令会新建一个java项目目录和基本的文件。建立项目后还可以查看已经建立的项目 &lt;code&gt;:ProjectList&lt;/code&gt; 返回结果&lt;code&gt;rojectName - (open|closed) - /project/root/path&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;添加项目源目录:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;添加项目源目录&lt;/h4&gt;
+
+&lt;p&gt;假定我们要在src目录下写java项目，首先要要在src目录下建立个Java文件夹。之后编辑.classpath文件 &lt;code&gt;vim /path/to/my_project/.classpath&lt;/code&gt; 文件应该像是这样&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
+&amp;lt;classpath&amp;gt;
+&amp;lt;classpathentry kind=&amp;quot;con&amp;quot; path=&amp;quot;org.eclipse.jdt.launching.JRE_CONTAINER&amp;quot;/&amp;gt;
+&amp;lt;classpathentry kind=&amp;quot;output&amp;quot; path=&amp;quot;bin&amp;quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;classpathentry kind=&#34;src&#34; path=&#34;src/java&#34;/&gt;
+&lt;/classpath&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;开始写代码:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;开始写代码&lt;/h4&gt;
+
+&lt;p&gt;在之前创建的目录src/Java下用vim新建个TestMain.java&lt;/p&gt;
+
+&lt;p&gt;在vim的编辑模式可以按快捷键&lt;br /&gt;
+&lt;code&gt;Ctrl + x&lt;/code&gt; 自动补全&lt;br /&gt;
+&lt;code&gt;Ctrl + u&lt;/code&gt; 返回最初的状态&lt;/p&gt;
+
+&lt;p&gt;之后编辑完毕执行 &lt;code&gt;:java&lt;/code&gt; 开始编译执行
+更多特性等待发掘。&lt;/p&gt;
+
+&lt;h3 id=&#34;结语:9a64dc308a20d78c18b68fe6346e7b3c&#34;&gt;结语&lt;/h3&gt;
+
+&lt;p&gt;elicm 感觉应该还不错功能很强大而且主要的是没有Eclipse那么大，正合我意。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>sublime_text快捷键</title>
