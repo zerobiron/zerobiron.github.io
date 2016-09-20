@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>
 	  
-	  sublime_text快捷键 | Zerobiron-Learn more write less
+	  算法从零开始 | Zerobiron-Learn more write less
 	  
   </title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/uikit/2.21.0/css/uikit.min.css">
@@ -66,133 +66,63 @@
 			<div class="uk-width-8-10">
 				<article class="uk-article">
 					<h1 class="uk-article-title" style="font-size: 23px;">
-						sublime_text快捷键
+						算法从零开始
 					</h1>
 					
-					<p class="uk-article-meta">Posted on Fri, Nov 277, 27116 |  <a href="/zerobiron.github.io/tags/tools" class="uk-button uk-button-mini">#Tools</a></p>
+					<p class="uk-article-meta">Posted on Fri, Nov 207, 20096 |  <a href="/zerobiron.github.io/tags/algorithm" class="uk-button uk-button-mini">#Algorithm</a></p>
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
           Unless otherwise indicated, the text of documents in this site is available under the <a href="https://creativecommons.org/licenses/by/3.0/deed">Creative Commons Attribution 3.0 Unported License</a>, or any later version. Copyright -2016 Zerobiron.
         </div>
 					
 
-<h1 id="sublime-text:86b3a916bfafdf014842cbeb962e574f">Sublime Text</h1>
+<h1 id="算法开始:95c69ed7b2d419ef59a1dbf4392cffae">算法开始</h1>
 
-<p>最好用的编辑器之一</p>
+<p>最近时间比较多，刚好得到了一本《算法导论》可以学习一下。目标是每天学习一个算法，并用编程语言实现。坚持下去一定会有所收获。</p>
 
-<h3 id="快捷键:86b3a916bfafdf014842cbeb962e574f">快捷键</h3>
+<h3 id="算法在计算中的作用:95c69ed7b2d419ef59a1dbf4392cffae">算法在计算中的作用</h3>
 
-<p>好的文本编辑器有很多其中我选择了Sublime Text.以下是常用的快捷键。</p>
+<p>算法(algorithm)就是定义良好的计算过程，取一个或一组值作为输入，并产生一个或一组值作为输出。算法不仅仅用于排序，实际应用中用到算法的有很多。比如因特网上管理和操纵大量的数据，电子商务的加密和数字签名技术还有制造业和其他商业应用分配资源等问题.
+其实我的想法是学了点东西，总比宅在宿舍打游戏好吧。但行好事，莫问前程。</p>
 
-<p>Ctrl+D 选词 （反复按快捷键，即可继续向下同时选中下一个相同的文本进行同时编辑）</p>
+<h3 id="第一个算法-插入排序:95c69ed7b2d419ef59a1dbf4392cffae">第一个算法——插入排序</h3>
 
-<p>Ctrl+G 跳转到相应的行</p>
+<p>书中详细说明了各种约定，比如循环不变式。
+循环不变式主要是帮助我们理解算法正确性。循环不变式必须有三个性质：初始化、保持和终止。
+问题介绍：
+输入：n个数&lt;a1,a2,…，an&gt;.
+输出：输入序列的一个排列&lt;a1&rsquo;,a2&rsquo;,&hellip;,an&rsquo; &gt;使得a1&rsquo;&lt;=a2&rsquo;&lt;=&hellip;&lt;=an&rsquo;.</p>
 
-<p>Ctrl+J 合并行（已选择需要合并的多行时）</p>
+<p>分析：从数组第二项a[j]开始，循环到数组最后一项。a[j]和前面相比如过比自己大，较大的数向后移动。整个过程保持数组的顺序是从小到大的。</p>
 
-<p>Ctrl+L 选择整行（按住-继续选择下行）</p>
+<p>Java代码如下：</p>
 
-<p>Ctrl+M 光标移动至括号内开始或结束的位置</p>
+<pre><code>import java.io.*;
+import java.util.Scanner;
 
-<p>Ctrl+T 词互换</p>
-
-<p>Ctrl+U 软撤销</p>
-
-<p>Ctrl+P 查找当前项目中的文件和快速搜索；输入 @ 查找文件主标题/函数；或者输入 :
-跳转到文件某行；</p>
-
-<p>Ctrl+R 快速列出/跳转到某个函数</p>
-
-<p>Ctrl+K Backspace 从光标处删除至行首</p>
-
-<p>Ctrl+K+B 开启/关闭侧边栏</p>
-
-<p>Ctrl+KK 从光标处删除至行尾</p>
-
-<p>Ctrl+K+T 折叠属性</p>
-
-<p>Ctrl+K+U 改为大写</p>
-
-<p>Ctrl+K+L 改为小写</p>
-
-<p>Ctrl+K+0 展开所有</p>
-
-<p>Ctrl+Enter 插入行后（快速换行）</p>
-
-<p>Ctrl+Tab 当前窗口中的标签页切换</p>
-
-<p>Ctrl+Shift+A 选择光标位置父标签对儿</p>
-
-<p>Ctrl+Shift+D 复制光标所在整行，插入在该行之前</p>
-
-<p>ctrl+shift+F 文件夹内查找，与普通编辑器不同的地方是sublime允许添加多个文件夹进行查找</p>
-
-<p>Ctrl+Shift+K 删除整行</p>
-
-<p>Ctrl+Shift+L 鼠标选中多行（按下快捷键），即可同时编辑这些行</p>
-
-<p>Ctrl+Shift+M 选择括号内的内容（按住-继续选择父括号）</p>
-
-<p>Ctrl+Shift+P 打开命令面板</p>
-
-<p>Ctrl+Shift+/ 注释已选择内容</p>
-
-<p>Ctrl+Shift+↑可以移动此行代码，与上行互换</p>
-
-<p>Ctrl+Shift+↓可以移动此行代码，与下行互换</p>
-
-<p>Ctrl+Shift+[ 折叠代码</p>
-
-<p>Ctrl+Shift+] 展开代码</p>
-
-<p>Ctrl+Shift+Enter 光标前插入行</p>
-
-<p>Ctrl+PageDown 、Ctrl+PageUp 文件按开启的前后顺序切换</p>
-
-<p>Ctrl+Z 撤销</p>
-
-<p>Ctrl+Y 恢复撤销</p>
-
-<p>Ctrl+F2 设置/取消书签</p>
-
-<p>Ctrl+/ 注释整行（如已选择内容，同“Ctrl+Shift+/”效果）</p>
-
-<p>Ctrl+鼠标左键 可以同时选择要编辑的多处文本</p>
-
-<p>Shift+鼠标右键（或使用鼠标中键）可以用鼠标进行竖向多行选择</p>
-
-<p>Shift+F2 上一个书签</p>
-
-<p>Shift+Tab 去除缩进</p>
-
-<p>Alt+Shift+1（非小键盘）窗口分屏，恢复默认1屏</p>
-
-<p>Alt+Shift+2 左右分屏-2列</p>
-
-<p>Alt+Shift+3 左右分屏-3列</p>
-
-<p>Alt+Shift+4 左右分屏-4列</p>
-
-<p>Alt+Shift+5 等分4屏</p>
-
-<p>Alt+Shift+8 垂直分屏-2屏</p>
-
-<p>Alt+Shift+9 垂直分屏-3屏</p>
-
-<p>Ctrl+Shift+分屏序号 将当前焦点页分配到分屏序号页</p>
-
-<p>Alt+. 闭合当前标签</p>
-
-<p>Alt+F3 选中文本按下快捷键，即可一次性选择全部的相同文本进行同时编辑</p>
-
-<p>Tab 缩进 自动完成</p>
-
-<p>F2 下一个书签</p>
-
-<p>F6 检测语法错误</p>
-
-<p>F9 行排序(按a-z)</p>
-
-<p>F11 全屏模式</p>
+public class InsertionSort{
+	public static void main(String[] args){
+		int[] A = new int[10];
+		Scanner sc = new Scanner(System.in);
+		int i,key;
+		for(i=0;i&lt;10;i++){
+			A[i]=sc.nextInt();
+		}
+		for(int j=2;j&lt;A.length;j++){
+			key = A[j];
+			int k=j-1;
+			while(k&gt;0 &amp;&amp; key&lt;A[k]){
+				A[k+1] = A[k];
+				k--;
+			}
+			A[k+1]=key;
+		}
+		for(int a:A){
+			System.out.print(a+&quot; &quot;);
+		}
+		System.out.print(&quot;\n&quot;);
+	}
+}
+</code></pre>
 
 				</article>
 			</div>
@@ -238,8 +168,6 @@
             
               
               
-              
-                <li><a href="/zerobiron.github.io/post/Jekyll%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/">Jekyll快速开始</a></li>
               
             
               
@@ -323,7 +251,7 @@ ga('send', 'pageview');
     dsq.async = true;
     ds_loaded = false;
   var disqus_shortname = '';
-    disqus_url = '\/zerobiron.github.io\/post\/sublime_text%E5%BF%AB%E6%8D%B7%E9%94%AE\/';
+    disqus_url = '\/zerobiron.github.io\/post\/algorithm_0\/';
   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 
   $('[data-uk-scrollspy]').on('init.uk.scrollspy', function () {

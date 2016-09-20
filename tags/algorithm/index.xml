@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Algorithm on Zerobiron-Learn more write less</title>
+    <link>zerobiron.github.io/tags/algorithm/</link>
+    <description>Recent content in Algorithm on Zerobiron-Learn more write less</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 20 Sep 2016 14:36:12 +0800</lastBuildDate>
+    <atom:link href="zerobiron.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>算法从零开始</title>
+      <link>/zerobiron.github.io/post/algorithm_0/</link>
+      <pubDate>Tue, 20 Sep 2016 14:36:12 +0800</pubDate>
+      
+      <guid>/zerobiron.github.io/post/algorithm_0/</guid>
+      <description>
+
+&lt;h1 id=&#34;算法开始:95c69ed7b2d419ef59a1dbf4392cffae&#34;&gt;算法开始&lt;/h1&gt;
+
+&lt;p&gt;最近时间比较多，刚好得到了一本《算法导论》可以学习一下。目标是每天学习一个算法，并用编程语言实现。坚持下去一定会有所收获。&lt;/p&gt;
+
+&lt;h3 id=&#34;算法在计算中的作用:95c69ed7b2d419ef59a1dbf4392cffae&#34;&gt;算法在计算中的作用&lt;/h3&gt;
+
+&lt;p&gt;算法(algorithm)就是定义良好的计算过程，取一个或一组值作为输入，并产生一个或一组值作为输出。算法不仅仅用于排序，实际应用中用到算法的有很多。比如因特网上管理和操纵大量的数据，电子商务的加密和数字签名技术还有制造业和其他商业应用分配资源等问题.
+其实我的想法是学了点东西，总比宅在宿舍打游戏好吧。但行好事，莫问前程。&lt;/p&gt;
+
+&lt;h3 id=&#34;第一个算法-插入排序:95c69ed7b2d419ef59a1dbf4392cffae&#34;&gt;第一个算法——插入排序&lt;/h3&gt;
+
+&lt;p&gt;书中详细说明了各种约定，比如循环不变式。
+循环不变式主要是帮助我们理解算法正确性。循环不变式必须有三个性质：初始化、保持和终止。
+问题介绍：
+输入：n个数&amp;lt;a1,a2,…，an&amp;gt;.
+输出：输入序列的一个排列&amp;lt;a1&amp;rsquo;,a2&amp;rsquo;,&amp;hellip;,an&amp;rsquo; &amp;gt;使得a1&amp;rsquo;&amp;lt;=a2&amp;rsquo;&amp;lt;=&amp;hellip;&amp;lt;=an&amp;rsquo;.&lt;/p&gt;
+
+&lt;p&gt;分析：从数组第二项a[j]开始，循环到数组最后一项。a[j]和前面相比如过比自己大，较大的数向后移动。整个过程保持数组的顺序是从小到大的。&lt;/p&gt;
+
+&lt;p&gt;Java代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import java.io.*;
+import java.util.Scanner;
+
+public class InsertionSort{
+	public static void main(String[] args){
+		int[] A = new int[10];
+		Scanner sc = new Scanner(System.in);
+		int i,key;
+		for(i=0;i&amp;lt;10;i++){
+			A[i]=sc.nextInt();
+		}
+		for(int j=2;j&amp;lt;A.length;j++){
+			key = A[j];
+			int k=j-1;
+			while(k&amp;gt;0 &amp;amp;&amp;amp; key&amp;lt;A[k]){
+				A[k+1] = A[k];
+				k--;
+			}
+			A[k+1]=key;
+		}
+		for(int a:A){
+			System.out.print(a+&amp;quot; &amp;quot;);
+		}
+		System.out.print(&amp;quot;\n&amp;quot;);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
